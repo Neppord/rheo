@@ -1,6 +1,6 @@
 // Need to export before we include if they include us
 module.exports = rheo
-rheo.parse = parse
+rheo.from_tokens = from_tokens
 rheo.mixin = mixin
 
 var h = require('highland')
@@ -29,14 +29,14 @@ function mixin (self) {
   return self
 }
 
-function parse (text) {
+function rheo (text) {
   var rheo = mixin(parse_stream())
   if (text) rheo.end(text)
   return rheo
 }
 
-function rheo (text) {
+function from_tokens (token) {
   var rheo = mixin(h())
-  if (text) rheo.end(text)
+  if (token) rheo.end(token)
   return rheo
 }

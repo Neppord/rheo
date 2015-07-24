@@ -25,7 +25,7 @@ var fluffy_puff_html = (
 
 describe('rheo', function () {
   it('takes html as input', function (done) {
-    var template = rheo.parse(html)
+    var template = rheo(html)
     h(template.render()).toArray(function (fragments) {
       var text = fragments.join('')
       expect(text).to.deep.equal(html)
@@ -33,7 +33,7 @@ describe('rheo', function () {
     })
   })
   it('exctracts subtemplates', function (done) {
-    var template = rheo.parse(html)
+    var template = rheo(html)
      .find('h1')
     h(template.render()).toArray(function (fragments) {
       var text = fragments.join('')
@@ -42,9 +42,9 @@ describe('rheo', function () {
     })
   })
   it('replaces content', function (done) {
-    var template = rheo.parse(html)
+    var template = rheo(html)
       .replace('h1', function (subtemplate) {
-        return rheo.parse('<h1>Hello Riverbank</h1>')
+        return rheo('<h1>Hello Riverbank</h1>')
       })
     h(template.render()).toArray(function (fragments) {
       var text = fragments.join('')
@@ -53,9 +53,9 @@ describe('rheo', function () {
     })
   })
   it('replaces inner content', function (done) {
-    var template = rheo.parse(html)
+    var template = rheo(html)
       .replace.inner('h1', function (subtemplate) {
-        return rheo.parse('Hello Riverbank')
+        return rheo('Hello Riverbank')
       })
     h(template.render()).toArray(function (fragments) {
       var text = fragments.join('')
@@ -64,13 +64,13 @@ describe('rheo', function () {
     })
   })
   it('chains when replacing content', function (done) {
-    var template = rheo.parse(pet_template)
+    var template = rheo(pet_template)
       .replace.inner('.pet-name', function () {
-        return rheo.parse('Fluffy Puff')
+        return rheo('Fluffy Puff')
       }).replace.inner('.pet-type', function () {
-        return rheo.parse('Rabbit')
+        return rheo('Rabbit')
       }).replace.inner('.pet-age', function () {
-        return rheo.parse('3')
+        return rheo('3')
       })
     h(template.render()).toArray(function (fragments) {
       var text = fragments.join('')
@@ -79,10 +79,10 @@ describe('rheo', function () {
     })
   })
   it('gives you the content you replace', function (done) {
-    var template = rheo.parse(html)
+    var template = rheo(html)
       .replace('h1', function (h1_template) {
         return h1_template.replace.inner('h1', function () {
-          return rheo.parse('Hello Riverbank')
+          return rheo('Hello Riverbank')
         })
       })
 
@@ -93,14 +93,14 @@ describe('rheo', function () {
     })
   })
   it('tranforms data to html', function (done) {
-    var template = rheo.parse(pet_template)
+    var template = rheo(pet_template)
       .map(function (t, data) {
         return t.replace.inner('.pet-name', function () {
-          return rheo.parse(data.name)
+          return rheo(data.name)
         }).replace.inner('.pet-type', function () {
-          return rheo.parse(data.type)
+          return rheo(data.type)
         }).replace.inner('.pet-age', function () {
-          return rheo.parse(data.age.toString())
+          return rheo(data.age.toString())
         })
       })
     pet_stream().pipe(template)
