@@ -78,7 +78,7 @@ html_stream,pipe(rheo())
   .render()
   .pipe(req)
 
-´´´
+```
 
 ## Iteration, map
 
