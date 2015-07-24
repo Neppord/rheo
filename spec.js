@@ -24,7 +24,7 @@ var fluffy_puff_html = (
 )
 
 describe('rheo', function () {
-  it('makes raw templating easy', function (done) {
+  it('takes html as input', function (done) {
     var template = rheo.parse(html)
     h(template.render()).toArray(function (fragments) {
       var text = fragments.join('')
@@ -32,7 +32,7 @@ describe('rheo', function () {
       done()
     })
   })
-  it('makes finding a sub templates easy', function (done) {
+  it('exctracts subtemplates', function (done) {
     var template = rheo.parse(html)
      .find('h1')
     h(template.render()).toArray(function (fragments) {
@@ -41,7 +41,7 @@ describe('rheo', function () {
       done()
     })
   })
-  it('makes replacing a element easy', function (done) {
+  it('replaces content', function (done) {
     var template = rheo.parse(html)
       .replace('h1', function (subtemplate) {
         return rheo.parse('<h1>Hello Riverbank</h1>')
@@ -52,7 +52,7 @@ describe('rheo', function () {
       done()
     })
   })
-  it('makes replacing content of elements easy', function (done) {
+  it('replaces inner content', function (done) {
     var template = rheo.parse(html)
       .replace.inner('h1', function (subtemplate) {
         return rheo.parse('Hello Riverbank')
@@ -63,7 +63,7 @@ describe('rheo', function () {
       done()
     })
   })
-  it('makes replacing multiple of content easy', function (done) {
+  it('chains when replacing content', function (done) {
     var template = rheo.parse(pet_template)
       .replace.inner('.pet-name', function () {
         return rheo.parse('Fluffy Puff')
@@ -78,7 +78,7 @@ describe('rheo', function () {
       done()
     })
   })
-  it('makes using the content of a element as a subtemplate easy', function (done) {
+  it('gives you the content you replace', function (done) {
     var template = rheo.parse(html)
       .replace('h1', function (h1_template) {
         return h1_template.replace.inner('h1', function () {
@@ -92,7 +92,7 @@ describe('rheo', function () {
       done()
     })
   })
-  it('makes mapping over data with a template easy', function (done) {
+  it('tranforms data to html', function (done) {
     var template = rheo.parse(pet_template)
       .map(function (t, data) {
         return t.replace.inner('.pet-name', function () {
