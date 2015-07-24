@@ -1,10 +1,9 @@
-#Rheo
-
+# Rheo
 
 Rheo is a template library built on top of `html-tokenize` and `html-select`
 it is hevily inspierd by `hyperstream` and `hyperspace`.
 
-#Usage
+# Usage
 
 Rheo uses streams every where, and where it can't use streams it uses callbacks
 that recieves and returns streams, with few exceptions.
