@@ -7,6 +7,7 @@ var rheo = require('./')
 
 var html = '<html><body><h1>Hello World</h1></body></html>'
 var h1 = '<h1>Hello World</h1>'
+var h1_bold = '<h1 class="bold">Hello World</h1>'
 var hello_rheobank = '<html><body><h1>Hello Riverbank</h1></body></html>'
 var pet_template = (
   '<div class="pet">' +
@@ -107,6 +108,17 @@ describe('rheo', function () {
     h(template.render()).toArray(function (fragments) {
       var text = fragments.join('')
       expect(text).to.deep.equal(fluffy_puff_html + fluffy_puff_html)
+      done()
+    })
+  })
+  it('replaces attributes', function (done) {
+    var template = rheo(h1)
+      .replace.attribute('h1', 'class', function () {
+        return 'bold'
+      })
+    h(template.render()).toArray(function (fragments) {
+      var text = fragments.join('')
+      expect(text).to.deep.equal(h1_bold)
       done()
     })
   })
