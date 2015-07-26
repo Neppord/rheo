@@ -95,6 +95,11 @@ describe('rheo', function () {
       })
     should_render(done, template, h1_bold)
   })
+  it('replaces attributes with shorthand', function (done) {
+    var template = rheo(h1)
+      .replace.attribute('h1', 'class', 'bold')
+    should_render(done, template, h1_bold)
+  })
   it('replaces multiple attributes', function (done) {
     var template = rheo(h1)
       .replace.attributes('h1', {
@@ -104,6 +109,14 @@ describe('rheo', function () {
         'id': function () {
           return 'top_heading'
         }
+      })
+    should_render(done, template, top_heading)
+  })
+  it('replaces multiple attributes with shorthand', function (done) {
+    var template = rheo(h1)
+      .replace.attributes('h1', {
+        'class': 'bold',
+        'id': 'top_heading'
       })
     should_render(done, template, top_heading)
   })

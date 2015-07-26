@@ -29,18 +29,27 @@ function outer (selector, cb) {
 
 function attribute (selector, attr, cb) {
   return select(selector, function (element) {
-    var value = element.getAttribute(attr)
-    var new_value = cb(value)
-    element.setAttribute(attr, new_value)
+    if (h.isFunction(cb)) {
+      var value = element.getAttribute(attr)
+      var new_value = cb(value)
+      element.setAttribute(attr, new_value)
+    } else {
+      element.setAttribute(attr, cb)
+    }
   })
 }
 function attributes (selector, obj) {
   return select(selector, function (element) {
     for (var attr in obj) {
       if (obj.hasOwnProperty(attr)) {
-        var value = element.getAttribute(attr)
-        var new_value = obj[attr](value)
-        element.setAttribute(attr, new_value)
+        var cb = obj[attr]
+        if (h.isFunction(cb)) {
+          var value = element.getAttribute(attr)
+          var new_value = cb(value)
+          element.setAttribute(attr, new_value)
+        } else {
+          element.setAttribute(attr, cb)
+        }
       }
     }
   })
