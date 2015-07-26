@@ -1,6 +1,6 @@
 # Rheo
 
-![Godess Rhea](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Rh%C3%A9a_pr%C3%A9sentant_une_pierre_emmaillot%C3%A9e_%C3%A0_Cronos_dessin_du_bas-relief_d%27un_autel_romain.jpg/240px-Rh%C3%A9a_pr%C3%A9sentant_une_pierre_emmaillot%C3%A9e_%C3%A0_Cronos_dessin_du_bas-relief_d%27un_autel_romain.jpg)
+[![Goddes Rhea probably from the word rheo][image_of_rhea]][Etymology_and_namesakes_for_Rhea]
 
 Rheo is a template library built on top of `html-tokenize` and `html-select`
 it is heavily inspired by `hyperstream` and `hyperspace`.
@@ -236,3 +236,6 @@ html_stream.pipe(rheo())
   .render()
   .pipe(process.stdout)
 ```
+
+[image_of_rhea]: https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Rh%C3%A9a_pr%C3%A9sentant_une_pierre_emmaillot%C3%A9e_%C3%A0_Cronos_dessin_du_bas-relief_d%27un_autel_romain.jpg/240px-Rh%C3%A9a_pr%C3%A9sentant_une_pierre_emmaillot%C3%A9e_%C3%A0_Cronos_dessin_du_bas-relief_d%27un_autel_romain.jpg
+[Etymology_and_namesakes_for_Rhea]: https://en.wikipedia.org/wiki/Rhea_(mythology)#Etymology_and_namesakes
