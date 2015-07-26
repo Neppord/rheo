@@ -14,7 +14,7 @@ function replace (selector, opts, cb) {
       var stream = elem.createStream(opts)
       cb(river.mixin(stream)).pipe(stream)
     } else if (h.isFunction(cb.pipe)) {
-      cb.pipe(elem.createWriteStream())
+      cb.pipe(elem.createWriteStream(opts))
     }
   })
 }
