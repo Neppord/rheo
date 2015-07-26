@@ -89,6 +89,15 @@ describe('rheo', function () {
       })
     should_render(done, template, h1_bold)
   })
+  it('creates pipelines easy with chain', function (done) {
+    var template = rheo(html)
+    var pipeline = rheo.chain(function (stream) {
+      return stream
+        .find('h1')
+        .replace.attribute('h1', 'class', function () {return 'bold'})
+    })
+    should_render(done, template.pipe(pipeline), h1_bold)
+  })
 })
 
 function should_render (done, template, html) {

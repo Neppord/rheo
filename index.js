@@ -1,7 +1,7 @@
 // Need to export before we include if they include us
 module.exports = rheo
-rheo.from_tokens = from_tokens
-rheo.chain = from_tokens
+rheo.from_tokens = chain
+rheo.chain = chain
 rheo.mixin = mixin
 
 var h = require('highland')
@@ -40,8 +40,12 @@ function rheo (text) {
   return rheo
 }
 
-function from_tokens (token) {
-  var rheo = mixin(h())
-  if (token) rheo.end(token)
-  return rheo
+function chain (func) {
+  if (h.isFunction(func)) {
+    return mixin(h.pipeline(function (stream) {
+      return func(mixin(stream)).pipe(h())
+    }))
+  } else {
+    return mixin(h())
+  }
 }
