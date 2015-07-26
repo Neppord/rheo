@@ -1,7 +1,8 @@
 // Need to export before we include if they include us
 module.exports = rheo
-rheo.from_tokens = chain
 rheo.chain = chain
+rheo.from_tokens = chain
+rheo.pipeline = chain
 rheo.mixin = mixin
 
 var h = require('highland')
