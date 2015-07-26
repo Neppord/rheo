@@ -1,15 +1,15 @@
 # Rheo
 
 Rheo is a template library built on top of `html-tokenize` and `html-select`
-it is hevily inspierd by `hyperstream` and `hyperspace`.
+it is heavily inspired by `hyperstream` and `hyperspace`.
 
 # Usage
 
-Rheo uses streams every where, and where it can't use streams it uses callbacks
+Rheo uses streams everywhere, and where it can't use streams it uses callbacks
 that recieves and returns streams, with few exceptions.
 
 ## Simple example
-The simplest and not verry interesting you can do is to just parse and then
+The simplest and not very interesting you can do is to just parse and then
 render html, like so:
 
 ```js
@@ -22,8 +22,8 @@ html_stream,pipe(rheo()).render().pipe(req)
 
 ## Using CSS selectors
 
-That was realy not exciting, right? Lets do something more fun and change
-the message from the last "exersice".
+That was not really exciting, right? Let's do something more fun and change
+the message from the last "exercise".
 
 ```js
 html_stream,pipe(rheo())
@@ -41,7 +41,7 @@ multiple of these calls and shape your template.
 
 A lot of the things that happen in a webpage are defined by attributes. This
 is the only place where the stream/callback pattern breaks in Rheo. But don't
-worry its still not complicated. And in theory we are only a pull request from
+worry it's still not complicated. And in theory we are only a pull request away from
 unifying the interface.
 
 
@@ -59,7 +59,7 @@ A little rainbow in your headings could never hurt, could it?
 ## Design by Example
 
 Sometimes hardcoded is just plain better then handcrafting a machinery that
-doese the same thing. Therefore its easy to pick one of many options when
+does the same thing. Therefore its easy to pick one of many options when
 replacing a content with one of its elements.
 
 ```html
@@ -81,7 +81,7 @@ html_stream,pipe(rheo())
 
 ## Iteration, map
 
-Html is a tree structure writen un a serial format. Sooner or later we want
+HTML is a tree structure writen in a serial format. Sooner or later we want
 map some stream of data into a stream of html.
 
 Take a look at this *view controller*.
@@ -96,7 +96,7 @@ function render_pet(template, data) {
 ```
 
 This function binds data to one pet template. This could be used for a pet
-profile, with the correct html. But it can also be reused for building list of
+profile, with the correct HTML. But it can also be reused for building list of
 pets.
 
 It works fine now to render one, but how do we render all list items?
@@ -113,13 +113,13 @@ html_stream,pipe(rheo())
 
 Assuming that `pet_data_stream` is a stream of pet data objects and that
 `html_stream` is a text stream of html with a list with the class `pet-list`
-and that that list contains one example of a pet list item. Then this will
+and that that list contains one example of a pet list item, then this will
 render a list of pets in that list.
 
 ## Super Modularity
 
-As you can see there is enormus potential to decuple your layout and templating
-from logic. And that is both good and dangerus so please be carefull. But one 
+As you can see there is enormus potential to decouple your layout and templating
+from logic. And that is both good and dangerous so please be careful! But one 
 more neat trick needs to be shared.
 
 How many times have a templating librarie let you down when doing something as
@@ -127,10 +127,10 @@ trivial as setting the `title` of your page. I have seen realy nasty ways to
 deal with that and selecting the current page in a menu.
 
 Changing things that have already been renderd in a `layout` template is
-normaly frustrating and hackish. With Rheo? no its simple.
+normaly frustrating and hackish. With Rheo? No, it's simple!
 
 
-Rheo templates can be piped together like so.
+Rheo templates can be piped together like so:
 
 ```js
 function select_menu(menu_name) {
@@ -154,8 +154,8 @@ page_template
 ```
 
 As long as the element with the selector that you want to alter is put into the
-stream it doesen't matter when you add the menu or change the title, except for
-performence. Neat hu!?
+stream it doesn't matter when you add the menu or change the title, except for
+performence. Neat huh!?
 
 
 
