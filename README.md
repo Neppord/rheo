@@ -135,10 +135,15 @@ Rheo templates can be piped together like so:
 ```js
 function select_menu(menu_name) {
   var selector = '.menu .menu-item.' + menu_name
-  return rheo.chain()
-    .replace.attribute(selector, 'class', function (classes) {
-      return classes + ' selected'
-    })
+  return rheo.chain(function (stream) {
+    return stream
+      .replace.attribute(selector, 'class', function (classes) {
+        return classes + ' selected'
+      })
+      .replace.attribute(selector + ' a', 'href', function () {
+        return '#'
+      })
+  })
 }
 
 function set_title(title) {
