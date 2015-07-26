@@ -30,6 +30,10 @@ describe('rheo', function () {
     var template = rheo(html)
     should_render(done, template, html)
   })
+  it('handles empty strings', function (done) {
+    var template = rheo('')
+    should_render(done, template, '')
+  })
   it('exctracts subtemplates', function (done) {
     var template = rheo(html)
      .find('h1')

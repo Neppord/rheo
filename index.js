@@ -41,7 +41,7 @@ function mixin (self) {
 
 function rheo (text) {
   var rheo = mixin(parse_stream())
-  if (text) rheo.end(text)
+  if (h.isString(text)) rheo.end(text)
   return rheo
 }
 
