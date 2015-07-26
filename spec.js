@@ -42,6 +42,11 @@ describe('rheo', function () {
       })
     should_render(done, template, hello_rheobank)
   })
+  it('replaces content with a given stream', function (done) {
+    var template = rheo(html)
+      .replace('h1', rheo('<h1>Hello Riverbank</h1>'))
+    should_render(done, template, hello_rheobank)
+  })
   it('replaces inner content', function (done) {
     var template = rheo(html)
       .replace.inner('h1', function (subtemplate) {
