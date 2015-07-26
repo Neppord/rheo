@@ -4,6 +4,7 @@ var river = require('./')
 replace.inner = inner
 replace.outer = outer
 replace.attribute = attribute
+replace.attributes = attributes
 module.exports = replace
 
 function replace (selector, opts, cb) {
@@ -26,5 +27,16 @@ function attribute (selector, attr, cb) {
     var value = element.getAttribute(attr)
     var new_value = cb(value)
     element.setAttribute(attr, new_value)
+  })
+}
+function attributes (selector, obj) {
+  return select(selector, function (element) {
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) {
+        var value = element.getAttribute(attr)
+        var new_value = obj[attr](value)
+        element.setAttribute(attr, new_value)
+      }
+    }
   })
 }

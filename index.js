@@ -29,6 +29,10 @@ function mixin (self) {
     var replace_attr = replace_stream.attribute(selector, attr, cb)
     return mixin(self.pipe(replace_attr))
   }
+  self.replace.attributes = function replace_attributes (selector, obj) {
+    var replace_attrs = replace_stream.attributes(selector, obj)
+    return mixin(self.pipe(replace_attrs))
+  }
   self.map = function map (callback) {
     return mixin(map_stream(self, callback))
   }

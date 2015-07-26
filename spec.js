@@ -8,6 +8,7 @@ var rheo = require('./')
 var html = '<html><body><h1>Hello World</h1></body></html>'
 var h1 = '<h1>Hello World</h1>'
 var h1_bold = '<h1 class="bold">Hello World</h1>'
+var top_heading = '<h1 class="bold" id="top_heading">Hello World</h1>'
 var hello_rheobank = '<html><body><h1>Hello Riverbank</h1></body></html>'
 var pet_template = (
   '<div class="pet">' +
@@ -88,6 +89,18 @@ describe('rheo', function () {
         return 'bold'
       })
     should_render(done, template, h1_bold)
+  })
+  it('replaces multiple attributes', function (done) {
+    var template = rheo(h1)
+      .replace.attributes('h1', {
+        'class': function () {
+          return 'bold'
+        },
+        'id': function () {
+          return 'top_heading'
+        }
+      })
+    should_render(done, template, top_heading)
   })
   it('creates pipelines easy with chain', function (done) {
     var template = rheo(html)
