@@ -34,6 +34,15 @@ html_stream,pipe(rheo())
   .pipe(req)
 ```
 
+or the short hand:
+
+```js
+html_stream,pipe(rheo())
+  .replace.inner('h1', rheo('Hello Template'))
+  .render()
+  .pipe(req)
+```
+
 Replace and replace.inner both return a new rheo stream and you could chain
 multiple of these calls and shape your template.
 
