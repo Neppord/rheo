@@ -54,7 +54,31 @@ html_stream,pipe(rheo())
   .pipe(req)
 ```
 
+Or shorthand if there is no other classes.
+
+```js
+html_stream,pipe(rheo())
+  .replace.attribute('h1', 'class', 'rainbow')
+  .render()
+  .pipe(req)
+```
+
 A little rainbow in your headings could never hurt, could it?
+
+
+If you would like to change multiple attributes on the same element there is a
+shorthand for that to.
+
+```js
+html_stream,pipe(rheo())
+  .replace.attributes('a', {
+    'class': 'rainbow',
+    'href': '#rainbow_power'
+  })
+  .render()
+  .pipe(req)
+```
+
 
 ## Design by Example
 
