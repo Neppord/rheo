@@ -1,1 +1,1 @@
-module.exports = require('html-tokenize') 
+module.exports = require('html-tokenize')
