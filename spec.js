@@ -83,6 +83,20 @@ describe('rheo', function () {
       })
     should_render(done, template, hello_rheobank)
   })
+  it('tranforms empty data to html', function (done) {
+    var template = rheo(pet_template)
+      .map(function (t, data) {
+        return t.replace.inner('.pet-name', function () {
+          return rheo(data.name)
+        }).replace.inner('.pet-type', function () {
+          return rheo(data.type)
+        }).replace.inner('.pet-age', function () {
+          return rheo(data.age.toString())
+        })
+      })
+    empty_stream().pipe(template)
+    should_render(done, template, '')
+  })
   it('tranforms data to html', function (done) {
     var template = rheo(pet_template)
       .map(function (t, data) {
@@ -154,4 +168,8 @@ function pet_stream () {
     {name: 'Fluffy Puff', type: 'Rabbit', age: 3},
     {name: 'Fluffy Puff', type: 'Rabbit', age: 3}
   ])
+}
+
+function empty_stream () {
+  return h([])
 }
