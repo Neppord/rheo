@@ -6,7 +6,7 @@
   "scripts": {
     "format": "standard --format",
     "lint": "standard",
-    "mocha": "find . -not -path \"*node_modules*\" -iname *spec.js | xargs mocha",
+    "mocha": "find . -not -path \"*node_modules*\" -iname \"*spec.js\" | xargs mocha",
     "test": "npm run lint && npm run mocha"
   },
   "repository": {
