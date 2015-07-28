@@ -65,6 +65,11 @@ describe('rheo', function () {
       .replace.inner('h1', rheo('Hello Rheo'))
     should_render(done, template, hello_rheo)
   })
+  it('set the inner content a given stream', function (done) {
+    var template = rheo(html)
+      .set.inner('h1', rheo('Hello Rheo'))
+    should_render(done, template, hello_rheo)
+  })
   it('chains when replacing content', function (done) {
     var template = rheo(pet_template)
       .replace.inner('.pet-name', function () {

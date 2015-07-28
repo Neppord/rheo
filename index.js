@@ -7,6 +7,7 @@ rheo.mixin = mixin
 
 var h = require('highland')
 var find_stream = require('./find')
+var set_stream = require('./set')
 var replace_stream = require('./replace')
 var parse_stream = require('./parse')
 var render_stream = require('./render')
@@ -19,23 +20,27 @@ function mixin (self) {
   self.render = function render () {
     return mixin(self.pipe(render_stream()))
   }
+  self.set = function set (selector, stream) {
+    return mixin(self.pipe(set_stream.outer(selector, stream)))
+  }
+  self.set.inner = function set_inner (selector, stream) {
+    return mixin(self.pipe(set_stream.inner(selector, stream)))
+  }
   self.replace = function replace (selector, arg) {
-    return mixin(self.pipe(replace_stream.outer(selector, function (stream) {
-      if (h.isFunction(arg)) {
-        return arg(mixin(stream))
-      } else {
-        return arg
-      }
-    })))
+    if (h.isFunction(arg)) {
+      var s = replace_stream.outer(selector, wrap_callback(arg))
+      return mixin(self.pipe(s))
+    } else {
+      return self.set(selector, arg)
+    }
   }
   self.replace.inner = function replace_inner (selector, arg) {
-    return mixin(self.pipe(replace_stream.inner(selector, function (stream) {
-      if (h.isFunction(arg)) {
-        return arg(mixin(stream))
-      } else {
-        return arg
-      }
-    })))
+    if (h.isFunction(arg)) {
+      var s = replace_stream.inner(selector, wrap_callback(arg))
+      return mixin(self.pipe(s))
+    } else {
+      return self.set.inner(selector, arg)
+    }
   }
   self.replace.attribute = function replace_attribute (selector, attr, cb) {
     var replace_attr = replace_stream.attribute(selector, attr, cb)
@@ -66,5 +71,11 @@ function chain (func) {
     }))
   } else {
     return mixin(h())
+  }
+}
+
+function wrap_callback (callback) {
+  return function (stream) {
+    return callback(mixin(stream))
   }
 }
