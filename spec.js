@@ -1,8 +1,9 @@
 /* global describe it */
 var fs = require('fs')
-var expect = require('chai').expect
 
 var h = require('highland')
+
+var should_render = require('./spec_helpers/should_render')
 
 var rheo = require('./')
 
@@ -167,15 +168,6 @@ describe('rheo', function () {
     should_render(done, template.pipe(pipeline), h1_bold)
   })
 })
-
-function should_render (done, template, html) {
-  h(template.render()).toArray(function (fragments) {
-    var text = fragments.join('')
-    expect(text).to.deep.equal(html)
-    done()
-  })
-
-}
 
 function pet_stream () {
   return h([

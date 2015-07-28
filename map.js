@@ -4,8 +4,11 @@ var repeat = require('./repeat')
 module.exports = map
 
 function map (template, callback) {
-  var stream_of_templates = h(template)
-    .collect().flatMap(repeat).map(function (array) {
+  var stream_of_templates = template
+    .pipe(h())
+    .collect()
+    .flatMap(repeat)
+    .map(function (array) {
       return h(array)
     })
   return h.pipeline(function (s) {
