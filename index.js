@@ -19,11 +19,23 @@ function mixin (self) {
   self.render = function render () {
     return mixin(self.pipe(render_stream()))
   }
-  self.replace = function replace (selector, cb) {
-    return mixin(self.pipe(replace_stream.outer(selector, cb)))
+  self.replace = function replace (selector, arg) {
+    return mixin(self.pipe(replace_stream.outer(selector, function (stream) {
+      if (h.isFunction(arg)) {
+        return arg(mixin(stream))
+      } else {
+        return arg
+      }
+    })))
   }
-  self.replace.inner = function replace_inner (selector, cb) {
-    return mixin(self.pipe(replace_stream.inner(selector, cb)))
+  self.replace.inner = function replace_inner (selector, arg) {
+    return mixin(self.pipe(replace_stream.inner(selector, function (stream) {
+      if (h.isFunction(arg)) {
+        return arg(mixin(stream))
+      } else {
+        return arg
+      }
+    })))
   }
   self.replace.attribute = function replace_attribute (selector, attr, cb) {
     var replace_attr = replace_stream.attribute(selector, attr, cb)
@@ -34,7 +46,9 @@ function mixin (self) {
     return mixin(self.pipe(replace_attrs))
   }
   self.map = function map (callback) {
-    return mixin(map_stream(self, callback))
+    return mixin(map_stream(self, function (stream, data) {
+      return callback(mixin(stream), data)
+    }))
   }
   return self
 }

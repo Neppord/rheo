@@ -7,6 +7,7 @@ var h = require('highland')
 var rheo = require('./')
 
 var html = fs.readFileSync('test_data/html.html').toString()
+var layout_with_menu = fs.readFileSync('test_data/layout_with_menu.html').toString()
 var h1 = '<h1>Hello World</h1>'
 var h1_bold = '<h1 class="bold">Hello World</h1>'
 var top_heading = '<h1 class="bold" id="top_heading">Hello World</h1>'
@@ -111,6 +112,13 @@ describe('rheo', function () {
       })
     pet_stream().pipe(template)
     should_render(done, template, fluffy_puff_html + fluffy_puff_html)
+  })
+  it.skip('replace menus with data driven html', function (done) {
+    var template = rheo(layout_with_menu)
+      .replace.inner('.menu', function (t) {
+        return h().pipe(t.map(function (t, d) {return t}))
+      })
+    should_render(done, template, '<ul class="menu"></ul>')
   })
   it('replaces attributes', function (done) {
     var template = rheo(h1)
