@@ -1,15 +1,16 @@
 /* global describe it */
+var fs = require('fs')
 var expect = require('chai').expect
 
 var h = require('highland')
 
 var rheo = require('./')
 
-var html = '<html><body><h1>Hello World</h1></body></html>'
+var html = fs.readFileSync('test_data/html.html').toString()
 var h1 = '<h1>Hello World</h1>'
 var h1_bold = '<h1 class="bold">Hello World</h1>'
 var top_heading = '<h1 class="bold" id="top_heading">Hello World</h1>'
-var hello_rheobank = '<html><body><h1>Hello Riverbank</h1></body></html>'
+var hello_rheo = fs.readFileSync('test_data/hello_rheo.html').toString()
 var pet_template = (
   '<div class="pet">' +
   '<h1 class="pet-name"></h1>' +
@@ -42,26 +43,26 @@ describe('rheo', function () {
   it('replaces content', function (done) {
     var template = rheo(html)
       .replace('h1', function (subtemplate) {
-        return rheo('<h1>Hello Riverbank</h1>')
+        return rheo('<h1>Hello Rheo</h1>')
       })
-    should_render(done, template, hello_rheobank)
+    should_render(done, template, hello_rheo)
   })
   it('replaces content with a given stream', function (done) {
     var template = rheo(html)
-      .replace('h1', rheo('<h1>Hello Riverbank</h1>'))
-    should_render(done, template, hello_rheobank)
+      .replace('h1', rheo('<h1>Hello Rheo</h1>'))
+    should_render(done, template, hello_rheo)
   })
   it('replaces inner content', function (done) {
     var template = rheo(html)
       .replace.inner('h1', function (subtemplate) {
-        return rheo('Hello Riverbank')
+        return rheo('Hello Rheo')
       })
-    should_render(done, template, hello_rheobank)
+    should_render(done, template, hello_rheo)
   })
   it('replaces inner content a given stream', function (done) {
     var template = rheo(html)
-      .replace.inner('h1', rheo('Hello Riverbank'))
-    should_render(done, template, hello_rheobank)
+      .replace.inner('h1', rheo('Hello Rheo'))
+    should_render(done, template, hello_rheo)
   })
   it('chains when replacing content', function (done) {
     var template = rheo(pet_template)
@@ -78,10 +79,10 @@ describe('rheo', function () {
     var template = rheo(html)
       .replace('h1', function (h1_template) {
         return h1_template.replace.inner('h1', function () {
-          return rheo('Hello Riverbank')
+          return rheo('Hello Rheo')
         })
       })
-    should_render(done, template, hello_rheobank)
+    should_render(done, template, hello_rheo)
   })
   it('tranforms empty data to html', function (done) {
     var template = rheo(pet_template)
