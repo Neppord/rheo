@@ -119,12 +119,12 @@ describe('rheo', function () {
     pet_stream().pipe(template)
     should_render(done, template, fluffy_puff_html + fluffy_puff_html)
   })
-  it.skip('replace menus with data driven html', function (done) {
+  it('replace menus with data driven html', function (done) {
     var template = rheo(layout_with_menu)
       .replace.inner('.menu', function (t) {
-        return h().pipe(t.map(function (t, d) {return t}))
+        return h([]).pipe(t.map(function (t, d) {return t}))
       })
-    should_render(done, template, '<ul class="menu"></ul>')
+    should_render(done, template, '<ul class="menu"></ul>\n')
   })
   it('replaces attributes', function (done) {
     var template = rheo(h1)
