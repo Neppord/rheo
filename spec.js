@@ -126,6 +126,13 @@ describe('rheo', function () {
       })
     should_render(done, template, '<ul class="menu"></ul>\n')
   })
+  it.skip('replace menus with example driven html', function (done) {
+    var template = rheo(layout_with_menu)
+      .replace.inner('.menu', function (t) {
+        return h([1]).pipe(t.find('.selected').map(function (t, d) {return t}))
+      })
+    should_render(done, template, '<ul class="menu"></ul>\n')
+  })
   it('replaces attributes', function (done) {
     var template = rheo(h1)
       .replace.attribute('h1', 'class', function () {
