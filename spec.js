@@ -126,14 +126,12 @@ describe('rheo', function () {
       })
     should_render(done, template, '<ul class="menu"></ul>\n')
   })
-  it.only('replace menus with example driven html', function (done) {
+  it('replace menus with example driven html', function (done) {
     var template = rheo(layout_with_menu)
       .replace.inner('.menu', function (t) {
         return h([1]).pipe(
           t
-            .on('end', function () {h.log('end of t')})
             .find('.selected')
-            .on('end', function () {h.log('end of find')})
             .map(function (t, d) {return t})
         )
       })
