@@ -126,12 +126,24 @@ describe('rheo', function () {
       })
     should_render(done, template, '<ul class="menu"></ul>\n')
   })
-  it.skip('replace menus with example driven html', function (done) {
+  it.only('replace menus with example driven html', function (done) {
     var template = rheo(layout_with_menu)
       .replace.inner('.menu', function (t) {
-        return h([1]).pipe(t.find('.selected').map(function (t, d) {return t}))
+        return h([1]).pipe(
+          t
+            .on('end', function () {h.log('end of t')})
+            .find('.selected')
+            .on('end', function () {h.log('end of find')})
+            .map(function (t, d) {return t})
+        )
       })
-    should_render(done, template, '<ul class="menu"></ul>\n')
+    should_render(done, template, (
+      '<ul class="menu"><li class="menu-item selected">\n' +
+      '    <a class="menu-link menu-title active" href="#">\n' +
+      '      link title\n' +
+      '    </a>\n' +
+      '  </li></ul>\n'
+    ))
   })
   it('replaces attributes', function (done) {
     var template = rheo(h1)
