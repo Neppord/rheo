@@ -1,5 +1,5 @@
 var h = require('highland')
-var repeat = require('./repeat')
+var repeat = require('../repeat')
 
 module.exports = map
 
