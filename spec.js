@@ -91,34 +91,6 @@ describe('rheo', function () {
       })
     should_render(done, template, hello_rheo)
   })
-  it('tranforms empty data to html', function (done) {
-    var template = rheo(pet_template)
-      .map(function (t, data) {
-        return t.replace.inner('.pet-name', function () {
-          return rheo(data.name)
-        }).replace.inner('.pet-type', function () {
-          return rheo(data.type)
-        }).replace.inner('.pet-age', function () {
-          return rheo(data.age.toString())
-        })
-      })
-    empty_stream().pipe(template)
-    should_render(done, template, '')
-  })
-  it('tranforms data to html', function (done) {
-    var template = rheo(pet_template)
-      .map(function (t, data) {
-        return t.replace.inner('.pet-name', function () {
-          return rheo(data.name)
-        }).replace.inner('.pet-type', function () {
-          return rheo(data.type)
-        }).replace.inner('.pet-age', function () {
-          return rheo(data.age.toString())
-        })
-      })
-    pet_stream().pipe(template)
-    should_render(done, template, fluffy_puff_html + fluffy_puff_html)
-  })
   it('replace menus with data driven html', function (done) {
     var template = rheo(layout_with_menu)
       .replace.inner('.menu', function (t) {
