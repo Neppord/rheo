@@ -12,8 +12,12 @@ var replace_stream = require('./replace')
 var parse_stream = require('./parse')
 var render_stream = require('./render')
 var map_stream = require('./map')
+var verify_stream = require('./verify')
 
 function mixin (self) {
+  self.verify = function verify () {
+    return mixin(self.pipe(verify_stream()))
+  }
   self.find = function find (selector) {
     return mixin(self.pipe(find_stream(selector)))
   }
