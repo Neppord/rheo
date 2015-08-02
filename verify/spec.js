@@ -20,4 +20,15 @@ describe('verify', function () {
       })
       .on('data', function () {})
   })
+  it('lets void elements be', function (done) {
+    var tokens = parse()
+    tokens.end('<li><img></li>')
+    tokens
+      .pipe(verify())
+      .on('error', function (err) {
+        throw err
+      })
+      .on('end', done)
+      .on('data', function () {})
+  })
 })

@@ -1,6 +1,7 @@
 module.exports = verify
 
 var h = require('highland')
+var void_elements = require('void-elements')
 
 function verify () {
   return h.pipeline(function (s) {
@@ -56,7 +57,7 @@ Tracker.prototype.is_open = function () {
 }
 
 Tracker.prototype.handle_open = function () {
-  this.stack.push(this.tag_name())
+  if (this.is_not_void()) this.stack.push(this.tag_name())
   this.send_token()
 }
 
@@ -75,7 +76,7 @@ Tracker.prototype.handle_close = function () {
 }
 
 Tracker.prototype.tags_are_matching = function () {
-  return this.tag_name === this.stack[this.stack.length - 1]
+  return this.tag_name() === this.stack[this.stack.length - 1]
 }
 
 Tracker.prototype.handle_match = function () {
@@ -100,6 +101,10 @@ Tracker.prototype.is_text = function () {
 
 Tracker.prototype.handle_text = function () {
   this.send_token()
+}
+
+Tracker.prototype.is_not_void = function () {
+  return void_elements[this.tag_name()] !== true
 }
 
 Tracker.prototype.tag_name = function () {
