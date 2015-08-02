@@ -157,14 +157,3 @@ describe('rheo', function () {
     should_render(done, template.pipe(pipeline), h1_bold)
   })
 })
-
-function pet_stream () {
-  return h([
-    {name: 'Fluffy Puff', type: 'Rabbit', age: 3},
-    {name: 'Fluffy Puff', type: 'Rabbit', age: 3}
-  ])
-}
-
-function empty_stream () {
-  return h([])
-}
