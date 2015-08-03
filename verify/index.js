@@ -19,6 +19,7 @@ function Tracker () {
   this.token = undefined
   this.next = undefined
   this.push = undefined
+  this.line_nr = 1
 }
 
 Tracker.prototype.process = function (error, token, push, next) {
@@ -31,7 +32,20 @@ Tracker.prototype.process = function (error, token, push, next) {
   else this.handle_token()
 }
 
+Tracker.prototype.increment_line_nr = function () {
+  this.line_nr = this.line_nr + this.token_newlines()  
+}
+
+Tracker.prototype.token_newlines = function () {
+  if (this.token[1]) {
+    var text = this.token[1].toString()
+    return text.length - text.replace('\n', '').length
+  } else return 0
+}
+
+
 Tracker.prototype.handle_token = function () {
+  this.increment_line_nr()
   if (this.is_open()) this.handle_open()
   else if (this.is_close()) this.handle_close()
   else if (this.is_text()) this.handle_text()
@@ -88,7 +102,9 @@ Tracker.prototype.handle_match = function () {
 
 Tracker.prototype.handle_mismatch = function () {
   this.push(new Error(
-    'Got closing tag for "' +
+    'close to line ' + 
+    this.line_nr +
+    ' got closing tag for "' +
     this.tag_name() +
     '" expected "' +
     this.stack[this.stack.length - 1] +

@@ -6,12 +6,14 @@ describe('verify', function () {
   it('throws a error when a tag closes befor its children', function (done) {
     var error_appened = false
     var tokens = parse()
-    tokens.end('<li><div></li></div>')
+    tokens.end('<li>\n<div>\n</li>\n</div>')
     tokens
       .pipe(verify())
       .on('error', function (err) {
         expect(err.message).to.contain('li')
         expect(err.message).to.contain('div')
+        expect(err.message).to.contain('3')
+
         error_appened = true
       })
       .on('end', function () {
