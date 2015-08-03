@@ -3,6 +3,8 @@ module.exports = verify
 var h = require('highland')
 var void_elements = require('void-elements')
 
+var COMMENT = ''
+
 function verify () {
   return h.pipeline(function (s) {
     var tracker = new Tracker()
@@ -108,7 +110,12 @@ Tracker.prototype.is_not_void = function () {
 }
 
 Tracker.prototype.tag_name = function () {
-  return this.token[1]
+  var match = this.token[1]
     .toString()
-    .match(/^<\/?(\w*)/)[1]
+    .match(/^<\/?(\w*)/)
+  if (match) {
+    return match[1]
+  } else {
+    return COMMENT
+  }
 }

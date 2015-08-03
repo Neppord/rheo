@@ -31,4 +31,15 @@ describe('verify', function () {
       .on('end', done)
       .on('data', function () {})
   })
+  it('lets comments be', function (done) {
+    var tokens = parse()
+    tokens.end('<li><!-- comment --></li>')
+    tokens
+      .pipe(verify())
+      .on('error', function (err) {
+        throw err
+      })
+      .on('end', done)
+      .on('data', function () {})
+  })
 })
