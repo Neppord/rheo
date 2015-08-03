@@ -30,7 +30,8 @@
   "dependencies": {
     "highland": "^2.5.1",
     "html-select": "^2.3.24",
-    "html-tokenize": "^1.2.5"
+    "html-tokenize": "^1.2.5",
+    "void-elements": "^2.0.1"
   },
   "devDependencies": {
     "chai": "^3.2.0",
