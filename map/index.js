@@ -9,10 +9,7 @@ function map (template, callback) {
     .collect()
     .flatMap(repeat)
     .map(function (array) {
-      return h(array)
-        .map(function (token) {
-          return token.map(function (o) {return o})
-        })
+      return h(array).map(clone_array)
     })
   return h.pipeline(function (s) {
     return s
@@ -21,4 +18,11 @@ function map (template, callback) {
         return callback(pair[1], pair[0]).pipe(h())
       })
   })
+}
+
+function clone_array (arr) {
+  var len = arr.length
+  var arr_clone = new Array(len)
+  while (len--) arr_clone[len] = arr[len]
+  return arr_clone
 }
