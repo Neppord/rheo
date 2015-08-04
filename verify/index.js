@@ -33,7 +33,7 @@ Tracker.prototype.process = function (error, token, push, next) {
 }
 
 Tracker.prototype.increment_line_nr = function () {
-  this.line_nr = this.line_nr + this.token_newlines()  
+  this.line_nr = this.line_nr + this.token_newlines()
 }
 
 Tracker.prototype.token_newlines = function () {
@@ -42,7 +42,6 @@ Tracker.prototype.token_newlines = function () {
     return text.length - text.replace('\n', '').length
   } else return 0
 }
-
 
 Tracker.prototype.handle_token = function () {
   this.increment_line_nr()
@@ -102,7 +101,7 @@ Tracker.prototype.handle_match = function () {
 
 Tracker.prototype.handle_mismatch = function () {
   this.push(new Error(
-    'close to line ' + 
+    'close to line ' +
     this.line_nr +
     ' got closing tag for "' +
     this.tag_name() +
