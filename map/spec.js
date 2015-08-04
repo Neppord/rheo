@@ -2,6 +2,7 @@
 var map = require('./')
 var parse = require('../parse')
 var set = require('../set')
+var replace = require('../replace')
 var should_render = require('../spec_helpers/should_render')
 
 describe('map', function () {
@@ -50,6 +51,25 @@ describe('map', function () {
       template.write('world')
       template.end()
       should_render(done, template, '<li>hello</li><li>world</li>')
+    })
+  })
+
+  describe('appending to attribute', function () {
+    function render (t, d) {
+      return t.pipe(replace.attribute('li', 'class', function (attr) {
+        return attr ? attr + ' hidden' : 'hidden'
+      }))
+    }
+    beforeEach(function () {
+      var tokens = parse()
+      template = map(tokens, render)
+      tokens.end(html)
+    })
+    it('renders many items', function (done) {
+      template.write('hello')
+      template.write('world')
+      template.end()
+      should_render(done, template, '<li class="hidden"></li><li class="hidden"></li>')
     })
   })
 

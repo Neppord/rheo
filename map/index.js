@@ -10,6 +10,9 @@ function map (template, callback) {
     .flatMap(repeat)
     .map(function (array) {
       return h(array)
+        .map(function (token) {
+          return token.map(function (o) {return o})
+        })
     })
   return h.pipeline(function (s) {
     return s
