@@ -33,6 +33,10 @@ describe('rheo', function () {
     var template = rheo(html)
     should_render(done, template, html)
   })
+  it('takes stringables as input', function (done) {
+    var template = rheo(0)
+    should_render(done, template, '0')
+  })
   it('handles empty strings', function (done) {
     var template = rheo('')
     should_render(done, template, '')

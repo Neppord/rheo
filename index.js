@@ -65,7 +65,7 @@ function mixin (self) {
 function rheo (text) {
   var rheo = mixin(parse_stream())
   if (h.isString(text)) rheo.end(text)
-  else if (text) {
+  else if (!h.isUndefined(text)) {
     if (h.isFunction(text.pipe)) text.pipe(rheo)
     else if (h.isFunction(text.toString)) rheo.end(text.toString())
   }
