@@ -3,6 +3,8 @@ module.exports = verify
 var h = require('highland')
 var void_elements = require('void-elements')
 
+var Deque = require('double-ended-queue')
+
 var COMMENT = ''
 
 function verify () {
@@ -14,7 +16,7 @@ function verify () {
 }
 
 function Tracker () {
-  this.stack = []
+  this.stack = new Deque()
   this.error = undefined
   this.token = undefined
   this.next = undefined
@@ -91,7 +93,7 @@ Tracker.prototype.handle_close = function () {
 }
 
 Tracker.prototype.tags_are_matching = function () {
-  return this.tag_name() === this.stack[this.stack.length - 1]
+  return this.tag_name() === this.stack.peekBack()
 }
 
 Tracker.prototype.handle_match = function () {

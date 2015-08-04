@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/Neppord/rheo",
   "dependencies": {
+    "double-ended-queue": "^0.9.7",
     "highland": "^2.5.1",
     "html-select": "^2.3.24",
     "html-tokenize": "^1.2.5",
