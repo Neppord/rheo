@@ -30,6 +30,12 @@ function mixin (self) {
   self.set.inner = function set_inner (selector, stream) {
     return mixin(self.pipe(set_stream.inner(selector, stream)))
   }
+  self.set.attribute = function set_attribute (selector, text) {
+    return mixin(self.pipe(set_stream.attribute(selector, text)))
+  }
+  self.set.attributes = function set_attributes (selector, obj) {
+    return mixin(self.pipe(set_stream.attributes(selector, obj)))
+  }
   self.replace = function replace (selector, arg) {
     if (h.isFunction(arg)) {
       var s = replace_stream.outer(selector, wrap_callback(arg))
