@@ -8,6 +8,7 @@ var should_render = require('./spec_helpers/should_render')
 var rheo = require('./')
 
 var html = fs.readFileSync('test_data/html.html').toString()
+var html_with_multiple_h1 = fs.readFileSync('test_data/html_with_multiple_h1.html').toString()
 var layout_with_menu = fs.readFileSync('test_data/layout_with_menu.html').toString()
 var h1 = '<h1>Hello World</h1>'
 var h1_bold = '<h1 class="bold">Hello World</h1>'
@@ -43,6 +44,11 @@ describe('rheo', function () {
   })
   it('exctracts subtemplates', function (done) {
     var template = rheo(html)
+     .find('h1')
+    should_render(done, template, h1)
+  })
+  it('exctracts only first subtemplates', function (done) {
+    var template = rheo(html_with_multiple_h1)
      .find('h1')
     should_render(done, template, h1)
   })

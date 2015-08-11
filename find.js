@@ -6,15 +6,17 @@ module.exports = function find (selector, opts) {
     var p = h()
     var stream_created = false
     s.pipe(select(selector, function (elem) {
-      stream_created = true
-      elem
-        .createReadStream(opts)
-        .pipe(p)
+      if (!stream_created) {
+        stream_created = true
+        elem
+          .createReadStream(opts)
+          .pipe(p)
+      }
     }))
-    .on('data', function () {})
-    .on('end', function () {
+    .once('end', function () {
       if (!stream_created) p.end()
     })
+    .resume()
     return p
   })
 }
