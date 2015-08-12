@@ -7,7 +7,8 @@
     "format": "standard --format",
     "lint": "standard",
     "mocha": "find . -not -path \"*node_modules*\" -iname \"*spec.js\" | xargs mocha",
-    "test": "npm run lint && npm run mocha"
+    "test": "npm run lint && npm run mocha",
+    "cover": "find . -not -path \"*node_modules*\" -iname \"*spec.js\" | xargs istanbul cover _mocha"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
   },
   "devDependencies": {
     "chai": "^3.2.0",
+    "istanbul": "^0.3.17",
     "standard": "^4.5.4"
   }
 }
