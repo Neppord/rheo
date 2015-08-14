@@ -25,7 +25,7 @@ function mixin (select, self) {
     return ret
   }
   self.render = function render () {
-    return mixin(self.select, self.through(render_stream()))
+    return self.through(render_stream())
   }
   self.replace = function replace (selector, arg) {
     select(selector, function (element) {
