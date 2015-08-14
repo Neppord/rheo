@@ -112,17 +112,17 @@ describe('rheo', function () {
   it('replace menus with example driven html', function (done) {
     var template = rheo(layout_with_menu)
       .replace.inner('.menu', function (t) {
-        return h([1]).pipe(
-          t
-            .find('.selected')
-            .map(function (t, d) {return t})
+        return h([1, 2]).pipe(
+          t.map(function (t, d) {
+            return t.find('.selected').replace.inner('a', rheo(d))
+          })
         )
       })
     should_render(done, template, (
       '<ul class="menu"><li class="menu-item selected">\n' +
-      '    <a class="menu-link menu-title active" href="#">\n' +
-      '      link title\n' +
-      '    </a>\n' +
+      '    <a class="menu-link menu-title active" href="#">1</a>\n' +
+      '  </li><li class="menu-item selected">\n' +
+      '    <a class="menu-link menu-title active" href="#">2</a>\n' +
       '  </li></ul>\n'
     ))
   })
