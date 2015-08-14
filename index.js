@@ -40,16 +40,22 @@ function mixin (select, self) {
   }
   self.replace = function replace (selector, arg) {
     if (h.isFunction(arg)) {
-      var s = replace_stream.outer(selector, wrap_callback(arg))
-      return mixin(self.select, self.through(s))
+      select(selector, function (element) {
+        wrap_callback(arg)(element.createReadStream())
+          .pipe(element.createWriteStream())
+      })
+      return self
     } else {
       return self.set(selector, arg)
     }
   }
   self.replace.inner = function replace_inner (selector, arg) {
     if (h.isFunction(arg)) {
-      var s = replace_stream.inner(selector, wrap_callback(arg))
-      return mixin(self.select, self.through(s))
+      select(selector, function (element) {
+        wrap_callback(arg)(element.createReadStream({inner: true}))
+          .pipe(element.createWriteStream({inner: true}))
+      })
+      return self
     } else {
       return self.set.inner(selector, arg)
     }
@@ -84,17 +90,17 @@ function rheo (text) {
     else if (h.isFunction(text.pipe)) text.pipe(parse)
     else if (h.isFunction(text.toString)) h([text.toString()]).pipe(parse)
   }
-  return mixin(select.select, parse)
+  return mixin(select.select.bind(select), parse)
 }
 
 function chain (func) {
   var select = select_stream()
   if (h.isFunction(func)) {
-    return mixin(select.select, h.pipeline(function (stream) {
-      return func(mixin(select.select, h(stream.pipe(select))))
+    return mixin(select.select.bind(select), h.pipeline(function (stream) {
+      return func(mixin(select.select.bind(select), h(stream.pipe(select))))
     }))
   } else {
-    return mixin(select.select, h.pipeline(function (s) {
+    return mixin(select.select.bind(select), h.pipeline(function (s) {
       return s.pipe(select).pipe(h())
     }))
   }
@@ -103,6 +109,6 @@ function chain (func) {
 function wrap_callback (callback) {
   var select = select_stream()
   return function (stream) {
-    return callback(mixin(select.select, h(stream.pipe(select))))
+    return callback(mixin(select.select.bind(select), h(stream.pipe(select))))
   }
 }
