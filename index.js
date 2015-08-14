@@ -9,7 +9,6 @@ var h = require('highland')
 var select_stream = require('html-select')
 var parse_stream = require('./parse')
 var render_stream = require('./render')
-var map_stream = require('./map')
 var verify_stream = require('./verify')
 
 function mixin (select, self) {
@@ -75,10 +74,30 @@ function mixin (select, self) {
     })
     return self
   }
-  self.map = function map (callback) {
-    return mixin(self.select, map_stream(self, function (stream, data) {
-      return callback(mixin(self.select, stream), data)
-    }))
+  self.map = function map (cb) {
+    var select = select_stream()
+    var text
+    return mixin(
+      select.select.bind(select),
+      h.pipeline(function (data_stream) {
+        return h
+          .concat(data_stream, self.render().collect())
+          .flatMap(function (data) {
+            if (text) {
+              if (cb.length > 1) {
+                return cb(rheo(text), data)
+              } else {
+                return h(text)
+                  .pipe(parse_stream())
+                  .pipe(cb(data))
+              }
+            } else {
+              text = data
+              return h([])
+            }
+          }).through(select)
+      })
+    )
   }
   return self
 }
@@ -92,7 +111,8 @@ function rheo (text) {
       .pipe(h())
   })
   if (arguments.length > 0) {
-    if (h.isString(text)) h([text]).pipe(parse)
+    if (h.isArray(text)) h(text).pipe(parse)
+    else if (h.isString(text)) h([text]).pipe(parse)
     else if (h.isUndefined(text)) h([]).pipe(parse)
     else if (h.isFunction(text.pipe)) text.pipe(parse)
     else if (h.isFunction(text.toString)) h([text.toString()]).pipe(parse)
