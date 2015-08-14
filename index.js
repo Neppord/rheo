@@ -8,8 +8,6 @@ rheo.mixin = mixin
 var h = require('highland')
 var select_stream = require('html-select')
 var find_stream = require('./find')
-var set_stream = require('./set')
-var replace_stream = require('./replace')
 var parse_stream = require('./parse')
 var render_stream = require('./render')
 var map_stream = require('./map')
@@ -26,47 +24,53 @@ function mixin (select, self) {
   self.render = function render () {
     return mixin(self.select, self.through(render_stream()))
   }
-  self.set = function set (selector, stream) {
-    return mixin(self.select, self.through(set_stream.outer(selector, stream)))
-  }
-  self.set.inner = function set_inner (selector, stream) {
-    return mixin(self.select, self.through(set_stream.inner(selector, stream)))
-  }
-  self.set.attribute = function set_attribute (selector, text) {
-    return mixin(self.select, self.through(set_stream.attribute(selector, text)))
-  }
-  self.set.attributes = function set_attributes (selector, obj) {
-    return mixin(self.select, self.through(set_stream.attributes(selector, obj)))
-  }
   self.replace = function replace (selector, arg) {
-    if (h.isFunction(arg)) {
-      select(selector, function (element) {
+    select(selector, function (element) {
+      if (h.isFunction(arg)) {
         wrap_callback(arg)(element.createReadStream())
           .pipe(element.createWriteStream())
-      })
-      return self
-    } else {
-      return self.set(selector, arg)
-    }
+      } else {
+        arg.pipe(element.createWriteStream())
+      }
+    })
+    return self
   }
   self.replace.inner = function replace_inner (selector, arg) {
-    if (h.isFunction(arg)) {
-      select(selector, function (element) {
+    select(selector, function (element) {
+      if (h.isFunction(arg)) {
         wrap_callback(arg)(element.createReadStream({inner: true}))
           .pipe(element.createWriteStream({inner: true}))
-      })
-      return self
-    } else {
-      return self.set.inner(selector, arg)
-    }
+      } else {
+        arg.pipe(element.createWriteStream({inner: true}))
+      }
+    })
+    return self
   }
   self.replace.attribute = function replace_attribute (selector, attr, cb) {
-    var replace_attr = replace_stream.attribute(selector, attr, cb)
-    return mixin(self.select, self.through(replace_attr))
+    select(selector, function (element) {
+      if (h.isFunction(cb)) {
+        element.setAttribute(attr, cb(element.getAttribute(attr)))
+      } else {
+        element.setAttribute(attr, cb)
+      }
+    })
+    return self
   }
+  self.set = self.replace
   self.replace.attributes = function replace_attributes (selector, obj) {
-    var replace_attrs = replace_stream.attributes(selector, obj)
-    return mixin(self.select, self.through(replace_attrs))
+    select(selector, function (element) {
+      for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) {
+          var cb = obj[attr]
+          if (h.isFunction(cb)) {
+            element.setAttribute(attr, cb(element.getAttribute(attr)))
+          } else {
+            element.setAttribute(attr, cb)
+          }
+        }
+      }
+    })
+    return self
   }
   self.map = function map (callback) {
     return mixin(self.select, map_stream(self, function (stream, data) {
