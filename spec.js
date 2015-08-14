@@ -3,6 +3,7 @@ var fs = require('fs')
 
 var h = require('highland')
 
+// var expect = require('chai').expect
 var should_render = require('./spec_helpers/should_render')
 
 var rheo = require('./')

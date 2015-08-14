@@ -7,7 +7,6 @@ rheo.mixin = mixin
 
 var h = require('highland')
 var select_stream = require('html-select')
-var find_stream = require('./find')
 var parse_stream = require('./parse')
 var render_stream = require('./render')
 var map_stream = require('./map')
@@ -19,7 +18,11 @@ function mixin (select, self) {
     return mixin(self.select, self.through(verify_stream()))
   }
   self.find = function find (selector) {
-    return mixin(self.select, self.through(find_stream(selector)))
+    var ret = rheo.chain()
+    select(selector, function (element) {
+      element.createReadStream().pipe(ret)
+    })
+    return ret
   }
   self.render = function render () {
     return mixin(self.select, self.through(render_stream()))
