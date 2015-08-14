@@ -69,14 +69,14 @@ function mixin (self) {
 }
 
 function rheo (text) {
-  var rheo = mixin(parse_stream())
+  var parse = parse_stream()
   if (arguments.length > 0) {
-    if (h.isString(text)) rheo.end(text)
-    else if (h.isUndefined(text)) rheo.end()
-    else if (h.isFunction(text.pipe)) text.pipe(rheo)
-    else if (h.isFunction(text.toString)) rheo.end(text.toString())
+    if (h.isString(text)) parse.end(text)
+    else if (h.isUndefined(text)) parse.end()
+    else if (h.isFunction(text.pipe)) parse.pipe(rheo)
+    else if (h.isFunction(text.toString)) parse.end(text.toString())
   }
-  return rheo
+  return mixin(parse)
 }
 
 function chain (func) {
