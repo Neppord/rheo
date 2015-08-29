@@ -17,8 +17,8 @@ Render.prototype._transform = function (queue, enc, cb) {
       var attrs = obj.attrs
       var text = '<' + obj.name
       for (var key in attrs) {
-        if (obj.hasOwnProperty(key)) {
-          text = text + key + '="' + attrs[key].replace('"', '&quot;') + '"'
+        if (attrs.hasOwnProperty(key)) {
+          text = text + ' ' + key + '="' + attrs[key].replace('"', '&quot;') + '"'
         }
       }
       text = text + '>'
