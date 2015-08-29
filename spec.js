@@ -84,29 +84,27 @@ describe('rheo', function () {
       return h1_template.inner('h1', rheo('Hello Rheo'))
     }
   })
-  it.skip('replace menus with data driven html', function (done) {
+  it('replace menus with data driven html', function (done) {
     var result = '<ul class="menu"></ul>\n'
-    checker(done, result)(rheo(layout_with_menu).inner('.menu', callback))
+    checker(done, result)(rheo(layout_with_menu).inner('.menu', callback).render())
     function callback (t) {
       return h([]).pipe(t.map(function (t, d) {return t}))
     }
   })
-  it.skip('replace menus with example driven html', function (done) {
-    var template = rheo(layout_with_menu)
-      .replace.inner('.menu', function (t) {
-        return h([1]).pipe(
-          t
-            .find('.selected')
-            .map(function (t, d) {return t})
-        )
-      })
-    should_render(done, template, (
+  it('replace menus with example driven html', function (done) {
+    var result = (
       '<ul class="menu"><li class="menu-item selected">\n' +
       '    <a class="menu-link menu-title active" href="#">\n' +
       '      link title\n' +
       '    </a>\n' +
       '  </li></ul>\n'
-    ))
+    )
+    checker(done, result)(rheo(layout_with_menu).inner('.menu', callback).render())
+    function callback (t) {
+      return h([1]).pipe(
+        t.find('.selected').map(function (t, d) {return t})
+      )
+    }
   })
   it.skip('replaces attributes', function (done) {
     var template = rheo(h1)

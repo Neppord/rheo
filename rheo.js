@@ -41,6 +41,11 @@ Rheo.prototype.inner = function (selector, obj) {
   }
 }
 
+Rheo.prototype.map = function (callback) {
+  var _Map = require('./map')
+  return new _Map(this, callback)
+}
+
 function stream_wraper (stream) {
   return function () {
     return stream
