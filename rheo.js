@@ -32,6 +32,15 @@ Rheo.prototype.find = function (selector) {
   return this.pipe(new Find(selector))
 }
 
+Rheo.prototype.inner = function (selector, obj) {
+  var Inner = require('./inner')
+  if (typeof obj === 'function') {
+    return this.pipe(new Inner(selector, obj))
+  } else if (typeof obj.pipe === 'function') {
+    return this.pipe(new Inner(selector, stream_wraper(obj)))
+  }
+}
+
 function stream_wraper (stream) {
   return function () {
     return stream

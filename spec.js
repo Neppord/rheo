@@ -56,48 +56,40 @@ describe('rheo', function () {
     var stream = rheo('<h1>Hello Rheo</h1>')
     checker(done, hello_rheo)(rheo(html).replace('h1', stream).render())
   })
-  it.skip('replaces inner content', function (done) {
+  it('replaces inner content', function (done) {
     checker(done, hello_rheo)(rheo(html).inner('h1', callback).render())
     function callback (subtemplate) {
       return rheo('Hello Rheo')
     }
   })
-  it.skip('replaces inner content a given stream', function (done) {
-    var template = rheo(html)
-      .replace.inner('h1', rheo('Hello Rheo'))
-    should_render(done, template, hello_rheo)
+  it('replaces inner content a given stream', function (done) {
+    var stream = rheo('Hello Rheo')
+    checker(done, hello_rheo)(rheo(html).inner('h1', stream).render())
   })
-  it.skip('set the inner content a given stream', function (done) {
-    var template = rheo(html)
-      .set.inner('h1', rheo('Hello Rheo'))
-    should_render(done, template, hello_rheo)
-  })
-  it.skip('chains when replacing content', function (done) {
-    var template = rheo(pet_template)
-      .replace.inner('.pet-name', function () {
+  it('chains when replacing content', function (done) {
+    checker(done, fluffy_puff_html)(
+    rheo(pet_template)
+      .inner('.pet-name', function () {
         return rheo('Fluffy Puff')
-      }).replace.inner('.pet-type', function () {
+      }).inner('.pet-type', function () {
         return rheo('Rabbit')
-      }).replace.inner('.pet-age', function () {
+      }).inner('.pet-age', function () {
         return rheo('3')
-      })
-    should_render(done, template, fluffy_puff_html)
+      }).render()
+    )
   })
-  it.skip('gives you the content you replace', function (done) {
-    var template = rheo(html)
-      .replace('h1', function (h1_template) {
-        return h1_template.replace.inner('h1', function () {
-          return rheo('Hello Rheo')
-        })
-      })
-    should_render(done, template, hello_rheo)
+  it('gives you the content you replace', function (done) {
+    checker(done, hello_rheo)(rheo(html).replace('h1', callback).render())
+    function callback (h1_template) {
+      return h1_template.inner('h1', rheo('Hello Rheo'))
+    }
   })
   it.skip('replace menus with data driven html', function (done) {
-    var template = rheo(layout_with_menu)
-      .replace.inner('.menu', function (t) {
-        return h([]).pipe(t.map(function (t, d) {return t}))
-      })
-    should_render(done, template, '<ul class="menu"></ul>\n')
+    var result = '<ul class="menu"></ul>\n'
+    checker(done, result)(rheo(layout_with_menu).inner('.menu', callback))
+    function callback (t) {
+      return h([]).pipe(t.map(function (t, d) {return t}))
+    }
   })
   it.skip('replace menus with example driven html', function (done) {
     var template = rheo(layout_with_menu)
