@@ -114,25 +114,21 @@ describe('rheo', function () {
   it('replaces attributes with shorthand', function (done) {
     checker(done, h1_bold)(rheo(h1).attribute('h1', 'class', 'bold').render())
   })
-  it.skip('replaces multiple attributes', function (done) {
-    var template = rheo(h1)
-      .replace.attributes('h1', {
-        'class': function () {
-          return 'bold'
-        },
-        'id': function () {
-          return 'top_heading'
-        }
-      })
-    should_render(done, template, top_heading)
+  it('replaces multiple attributes', function (done) {
+    checker(done, top_heading)(rheo(h1).attributes('h1', {
+      'class': function () {
+        return 'bold'
+      },
+      'id': function () {
+        return 'top_heading'
+      }
+    }).render())
   })
-  it.skip('replaces multiple attributes with shorthand', function (done) {
-    var template = rheo(h1)
-      .replace.attributes('h1', {
-        'class': 'bold',
-        'id': 'top_heading'
-      })
-    should_render(done, template, top_heading)
+  it('replaces multiple attributes with shorthand', function (done) {
+    checker(done, top_heading)(rheo(h1).attributes('h1', {
+      'class': 'bold',
+      'id': 'top_heading'
+    }).render())
   })
   it.skip('creates pipelines easy with chain', function (done) {
     var template = rheo(html)

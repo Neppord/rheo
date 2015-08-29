@@ -52,8 +52,20 @@ Rheo.prototype.attribute = function (sel, attr, obj) {
   else return this.pipe(new Attribute(sel, attr, value(obj)))
 }
 
-function value (stream) {
+Rheo.prototype.attributes = function (sel, attrs) {
+  var Attributes = require('./attributes')
+  var hash = {}
+  for (var key in attrs) {
+    if (attrs.hasOwnProperty(key)) {
+      if (typeof attrs[key] === 'function') hash[key] = attrs[key]
+      else hash[key] = value(attrs[key])
+    }
+  }
+  return this.pipe(new Attributes(sel, hash))
+}
+
+function value (obj) {
   return function () {
-    return stream
+    return obj
   }
 }
