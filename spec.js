@@ -106,17 +106,13 @@ describe('rheo', function () {
       )
     }
   })
-  it.skip('replaces attributes', function (done) {
-    var template = rheo(h1)
-      .replace.attribute('h1', 'class', function () {
-        return 'bold'
-      })
-    should_render(done, template, h1_bold)
+  it('replaces attributes', function (done) {
+    checker(done, h1_bold)(rheo(h1).attribute('h1', 'class', function () {
+      return 'bold'
+    }).render())
   })
-  it.skip('replaces attributes with shorthand', function (done) {
-    var template = rheo(h1)
-      .replace.attribute('h1', 'class', 'bold')
-    should_render(done, template, h1_bold)
+  it('replaces attributes with shorthand', function (done) {
+    checker(done, h1_bold)(rheo(h1).attribute('h1', 'class', 'bold').render())
   })
   it.skip('replaces multiple attributes', function (done) {
     var template = rheo(h1)

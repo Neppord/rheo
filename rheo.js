@@ -23,7 +23,7 @@ Rheo.prototype.replace = function (selector, obj) {
   if (typeof obj === 'function') {
     return this.pipe(new Replace(selector, obj))
   } else if (typeof obj.pipe === 'function') {
-    return this.pipe(new Replace(selector, stream_wraper(obj)))
+    return this.pipe(new Replace(selector, value(obj)))
   }
 }
 
@@ -37,7 +37,7 @@ Rheo.prototype.inner = function (selector, obj) {
   if (typeof obj === 'function') {
     return this.pipe(new Inner(selector, obj))
   } else if (typeof obj.pipe === 'function') {
-    return this.pipe(new Inner(selector, stream_wraper(obj)))
+    return this.pipe(new Inner(selector, value(obj)))
   }
 }
 
@@ -46,7 +46,13 @@ Rheo.prototype.map = function (callback) {
   return new _Map(this, callback)
 }
 
-function stream_wraper (stream) {
+Rheo.prototype.attribute = function (sel, attr, obj) {
+  var Attribute = require('./attribute')
+  if (typeof obj === 'function') return this.pipe(new Attribute(sel, attr, obj))
+  else return this.pipe(new Attribute(sel, attr, value(obj)))
+}
+
+function value (stream) {
   return function () {
     return stream
   }
