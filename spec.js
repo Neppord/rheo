@@ -32,43 +32,31 @@ var fluffy_puff_html = (
 
 describe('rheo', function () {
   it('takes html as input', function (done) {
-    var result = ''
+    var c = checker(done, html)
     rheo(html)
       .on('error', done)
       .render()
       .on('error', done)
-      .on('data', function (data) {result += data})
-      .on('end', function (data) {
-        if (data) result += data
-        expect(result).to.equal(html)
-        done()
-      })
+      .on('data', c.data)
+      .on('end', c.end)
   })
   it('takes stringables as input', function (done) {
-    var result = ''
+    var c = checker(done, '0')
     rheo(0)
       .on('error', done)
       .render()
       .on('error', done)
-      .on('data', function (data) {result += data})
-      .on('end', function (data) {
-        if (data) result += data
-        expect(result).to.equal('0')
-        done()
-      })
+      .on('data', c.data)
+      .on('end', c.end)
   })
   it('handles empty strings', function (done) {
-    var result = ''
+    var c = checker(done, '')
     rheo('')
       .on('error', done)
       .render()
       .on('error', done)
-      .on('data', function (data) {result += data})
-      .on('end', function (data) {
-        if (data) result += data
-        expect(result).to.equal('')
-        done()
-      })
+      .on('data', c.data)
+      .on('end', c.end)
   })
   it.skip('exctracts subtemplates', function (done) {
     var template = rheo(html)
@@ -81,7 +69,7 @@ describe('rheo', function () {
     should_render(done, template, h1)
   })
   it('replaces content', function (done) {
-    var result = ''
+    var c = checker(done, hello_rheo)
     rheo(html)
       .on('error', done)
       .replace('h1', function (subtemplate) {
@@ -91,27 +79,19 @@ describe('rheo', function () {
       .on('error', done)
       .render()
       .on('error', done)
-      .on('data', function (data) { result += data})
-      .on('end', function (data) {
-        if (data) result += data
-        expect(result).to.equal(hello_rheo)
-        done()
-      })
+      .on('data', c.data)
+      .on('end', c.end)
   })
   it('replaces content with a given stream', function (done) {
-    var result = ''
+    var c = checker(done, hello_rheo)
     rheo(html)
       .on('error', done)
-      .replace('h1', rheo('<h1>Hello Rheo</h1>'))
+      .replace('h1', rheo('<h1>Hello Rheo</h1>').on('error', done))
       .on('error', done)
       .render()
       .on('error', done)
-      .on('data', function (data) { result += data})
-      .on('end', function (data) {
-        if (data) result += data
-        expect(result).to.equal(hello_rheo)
-        done()
-      })
+      .on('data', c.data)
+      .on('end', c.end)
   })
   it.skip('replaces inner content', function (done) {
     var template = rheo(html)
@@ -216,3 +196,17 @@ describe('rheo', function () {
     should_render(done, template.pipe(pipeline), h1_bold)
   })
 })
+
+function checker (done, html) {
+  var result = ''
+  return {
+    data: function (data) {
+      result += data
+    },
+    end: function (data) {
+      if (data) result += data
+      expect(result).to.equal(html)
+      done()
+    }
+  }
+}
