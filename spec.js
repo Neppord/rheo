@@ -43,13 +43,29 @@ describe('rheo', function () {
         done()
       })
   })
-  it.skip('takes stringables as input', function (done) {
-    var template = rheo(0)
-    should_render(done, template, '0')
+  it('takes stringables as input', function (done) {
+    var result = ''
+    rheo(0)
+      .on('error', done)
+      .render()
+      .on('error', done)
+      .on('data', function (data) {result += data})
+      .on('end', function () {
+        expect(result).to.equal('0')
+        done()
+      })
   })
-  it.skip('handles empty strings', function (done) {
-    var template = rheo('')
-    should_render(done, template, '')
+  it('handles empty strings', function (done) {
+    var result = ''
+    rheo('')
+      .on('error', done)
+      .render()
+      .on('error', done)
+      .on('data', function (data) {result += data})
+      .on('end', function () {
+        expect(result).to.equal('')
+        done()
+      })
   })
   it.skip('exctracts subtemplates', function (done) {
     var template = rheo(html)
