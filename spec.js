@@ -32,79 +32,35 @@ var fluffy_puff_html = (
 
 describe('rheo', function () {
   it('takes html as input', function (done) {
-    var c = checker(done, html)
-    rheo(html)
-      .on('error', done)
-      .render()
-      .on('error', done)
-      .on('data', c.data)
-      .on('end', c.end)
+    checker(done, html)(rheo(html).render())
   })
   it('takes stringables as input', function (done) {
-    var c = checker(done, '0')
-    rheo(0)
-      .on('error', done)
-      .render()
-      .on('error', done)
-      .on('data', c.data)
-      .on('end', c.end)
+    checker(done, '0')(rheo(0).render())
   })
   it('handles empty strings', function (done) {
-    var c = checker(done, '')
-    rheo('')
-      .on('error', done)
-      .render()
-      .on('error', done)
-      .on('data', c.data)
-      .on('end', c.end)
+    checker(done, '')(rheo('').render())
   })
   it('exctracts subtemplates', function (done) {
-    var c = checker(done, h1)
-    rheo(html)
-     .find('h1')
-     .render()
-     .on('data', c.data)
-     .on('end', c.end)
+    checker(done, h1)(rheo(html).find('h1').render())
   })
   it('exctracts only first subtemplates', function (done) {
-    var c = checker(done, h1)
-    rheo(html_with_multiple_h1)
-     .find('h1')
-     .render()
-     .on('data', c.data)
-     .on('end', c.end)
+    checker(done, h1)(rheo(html_with_multiple_h1).find('h1').render())
   })
   it('replaces content', function (done) {
-    var c = checker(done, hello_rheo)
-    rheo(html)
-      .on('error', done)
-      .replace('h1', function (subtemplate) {
-        return rheo('<h1>Hello Rheo</h1>')
-          .on('error', done)
-      })
-      .on('error', done)
-      .render()
-      .on('error', done)
-      .on('data', c.data)
-      .on('end', c.end)
+    checker(done, hello_rheo)(rheo(html).replace('h1', callback).render())
+    function callback (subtemplate) {
+      return rheo('<h1>Hello Rheo</h1>')
+    }
   })
   it('replaces content with a given stream', function (done) {
-    var c = checker(done, hello_rheo)
-    rheo(html)
-      .on('error', done)
-      .replace('h1', rheo('<h1>Hello Rheo</h1>').on('error', done))
-      .on('error', done)
-      .render()
-      .on('error', done)
-      .on('data', c.data)
-      .on('end', c.end)
+    var stream = rheo('<h1>Hello Rheo</h1>')
+    checker(done, hello_rheo)(rheo(html).replace('h1', stream).render())
   })
   it.skip('replaces inner content', function (done) {
-    var template = rheo(html)
-      .replace.inner('h1', function (subtemplate) {
-        return rheo('Hello Rheo')
-      })
-    should_render(done, template, hello_rheo)
+    checker(done, hello_rheo)(rheo(html).inner('h1', callback).render())
+    function callback (subtemplate) {
+      return rheo('Hello Rheo')
+    }
   })
   it.skip('replaces inner content a given stream', function (done) {
     var template = rheo(html)
@@ -205,14 +161,19 @@ describe('rheo', function () {
 
 function checker (done, html) {
   var result = ''
-  return {
-    data: function (data) {
-      result += data
-    },
-    end: function (data) {
-      if (data) result += data
-      expect(result).to.equal(html)
-      done()
-    }
+  function data (data) {
+    result += data
   }
+  function end (data) {
+    if (data) result += data
+    expect(result).to.equal(html)
+    done()
+  }
+  function helper (stream) {
+    stream.on('data', data)
+    return stream.on('end', end)
+  }
+  helper.data = data
+  helper.end = end
+  return helper
 }
