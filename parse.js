@@ -10,6 +10,7 @@ util.inherits(Parse, Rheo)
 function Parse () {
   Rheo.call(this, {objectMode: true})
   this.queue = new Deque()
+  this.open_stack = new Deque()
   this.parser = new htmlparser2.Parser({
     onopentag: this._onopentag.bind(this),
     onclosetag: this._onclosetag.bind(this),
@@ -18,17 +19,21 @@ function Parse () {
 }
 
 Parse.prototype._onopentag = function (name, attrs) {
-  this.queue.enqueue({
+  var obj = {
     type: 'open',
     name: name,
     attrs: attrs
-  })
+  }
+  this.open_stack.push(obj)
+  this.queue.enqueue(obj)
 }
 
 Parse.prototype._onclosetag = function (name) {
+  var open = this.open_stack.pop()
   this.queue.enqueue({
     type: 'close',
-    name: name
+    name: name,
+    open: open
   })
 }
 

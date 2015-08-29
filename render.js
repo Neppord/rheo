@@ -4,7 +4,6 @@ var util = require('util')
 
 util.inherits(Render, Rheo)
 
-
 function Render () {
   Rheo.call(this, {objectMode: true})
 }

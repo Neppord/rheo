@@ -1,51 +1,64 @@
-var select = require('html-select')
-var h = require('highland')
+module.exports = Replace
+var Rheo = require('./rheo')
+var util = require('util')
+var cssauron = require('./cssauron')
+var Deque = require('double-ended-queue')
 
-replace.inner = inner
-replace.outer = outer
-replace.attribute = attribute
-replace.attributes = attributes
-module.exports = replace
+util.inherits(Replace, Rheo)
 
-function replace (selector, opts, cb) {
-  return select(selector, function (elem) {
-    var stream = elem.createStream(opts)
-    cb(stream).pipe(stream)
-  })
+function Replace (selector, callback) {
+  Rheo.call(this, {objectMode: true})
+  this.callback = callback
+  this.state = BEFORE
+  this.check = cssauron(selector)
+  this.before = new Deque()
+  this.after = new Deque()
+  this.through = new Deque()
 }
+var BEFORE = {}
+var THROUGH = {}
+var AFTER = {}
 
-function inner (selector, cb) {
-  return replace(selector, {inner: true}, cb)
-}
-
-function outer (selector, cb) {
-  return replace(selector, {}, cb)
-}
-
-function attribute (selector, attr, cb) {
-  return select(selector, function (element) {
-    if (h.isFunction(cb)) {
-      var value = element.getAttribute(attr)
-      var new_value = cb(value)
-      element.setAttribute(attr, new_value)
-    } else {
-      element.setAttribute(attr, cb)
-    }
-  })
-}
-function attributes (selector, obj) {
-  return select(selector, function (element) {
-    for (var attr in obj) {
-      if (obj.hasOwnProperty(attr)) {
-        var cb = obj[attr]
-        if (h.isFunction(cb)) {
-          var value = element.getAttribute(attr)
-          var new_value = cb(value)
-          element.setAttribute(attr, new_value)
+Replace.prototype._transform = function (queue, enc, cb) {
+  var obj = queue.dequeue()
+  while (obj !== undefined) {
+    if (this.state === BEFORE) {
+      if (obj.type === 'open') {
+        if (this.check(obj)) {
+          this.open = obj
+          this.through.enqueue(obj)
+          this.state = THROUGH
         } else {
-          element.setAttribute(attr, cb)
+          this.before.enqueue(obj)
         }
+      } else {
+        this.before.enqueue(obj)
       }
+    } else if (this.state === THROUGH) {
+      if (obj.type === 'close' && obj.open === this.open) this.state = AFTER
+      this.through.enqueue(obj)
+    } else if (this.state === AFTER) {
+      this.after.enqueue(obj)
     }
+    obj = queue.dequeue()
+  }
+  cb()
+}
+
+Replace.prototype._flush = function (cb) {
+  var self = this
+  var rheo = new Rheo({objectMode: true})
+  var callback = this.callback
+  rheo.end(this.through)
+  var ret = callback(rheo)
+  this.push(this.before)
+  ret.on('data', function (queue) {
+    self.push(queue)
+  })
+  ret.on('end', function (queue) {
+    if (queue) self.push(queue)
+    self.push(self.after)
+    cb()
   })
 }
+

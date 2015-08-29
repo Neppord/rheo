@@ -38,7 +38,8 @@ describe('rheo', function () {
       .render()
       .on('error', done)
       .on('data', function (data) {result += data})
-      .on('end', function () {
+      .on('end', function (data) {
+        if (data) result += data
         expect(result).to.equal(html)
         done()
       })
@@ -50,7 +51,8 @@ describe('rheo', function () {
       .render()
       .on('error', done)
       .on('data', function (data) {result += data})
-      .on('end', function () {
+      .on('end', function (data) {
+        if (data) result += data
         expect(result).to.equal('0')
         done()
       })
@@ -62,7 +64,8 @@ describe('rheo', function () {
       .render()
       .on('error', done)
       .on('data', function (data) {result += data})
-      .on('end', function () {
+      .on('end', function (data) {
+        if (data) result += data
         expect(result).to.equal('')
         done()
       })
@@ -77,17 +80,38 @@ describe('rheo', function () {
      .find('h1')
     should_render(done, template, h1)
   })
-  it.skip('replaces content', function (done) {
-    var template = rheo(html)
+  it('replaces content', function (done) {
+    var result = ''
+    rheo(html)
+      .on('error', done)
       .replace('h1', function (subtemplate) {
         return rheo('<h1>Hello Rheo</h1>')
+          .on('error', done)
       })
-    should_render(done, template, hello_rheo)
+      .on('error', done)
+      .render()
+      .on('error', done)
+      .on('data', function (data) { result += data})
+      .on('end', function (data) {
+        if (data) result += data
+        expect(result).to.equal(hello_rheo)
+        done()
+      })
   })
-  it.skip('replaces content with a given stream', function (done) {
-    var template = rheo(html)
+  it('replaces content with a given stream', function (done) {
+    var result = ''
+    rheo(html)
+      .on('error', done)
       .replace('h1', rheo('<h1>Hello Rheo</h1>'))
-    should_render(done, template, hello_rheo)
+      .on('error', done)
+      .render()
+      .on('error', done)
+      .on('data', function (data) { result += data})
+      .on('end', function (data) {
+        if (data) result += data
+        expect(result).to.equal(hello_rheo)
+        done()
+      })
   })
   it.skip('replaces inner content', function (done) {
     var template = rheo(html)
