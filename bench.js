@@ -17,10 +17,10 @@ function bench () {
     .replace('img', rheo(''))
     .replace('img', rheo(''))
     .replace('img', rheo(''))
-    .replace('img', rheo(''))
-    .replace('img', rheo(''))
+    .find('body')
+    .find('.mw-body')
     .render()
-    .on('data', function () {})
+    .on('data', function (data) {})
     .on('error', function (error) {console.log(error)})
     .on('end', function () {
       var arr = process.hrtime(start)
