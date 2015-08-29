@@ -3,7 +3,6 @@ var fs = require('fs')
 
 var h = require('highland')
 
-var should_render = require('./spec_helpers/should_render')
 var expect = require('chai').expect
 
 var rheo = require('./')
@@ -130,14 +129,14 @@ describe('rheo', function () {
       'id': 'top_heading'
     }).render())
   })
-  it.skip('creates pipelines easy with chain', function (done) {
+  it('creates pipelines easy with chain', function (done) {
     var template = rheo(html)
     var pipeline = rheo.chain(function (stream) {
       return stream
         .find('h1')
-        .replace.attribute('h1', 'class', function () {return 'bold'})
+        .attribute('h1', 'class', function () {return 'bold'})
     })
-    should_render(done, template.pipe(pipeline), h1_bold)
+    checker(done, h1_bold)(template.pipe(pipeline).render())
   })
 })
 
