@@ -1,22 +1,43 @@
-var h = require('highland')
-var select = require('html-select')
+module.exports = Find
+var Rheo = require('./rheo')
+var util = require('util')
+var cssauron = require('./cssauron')
+var Deque = require('double-ended-queue')
 
-module.exports = function find (selector, opts) {
-  return h.pipeline(function (s) {
-    var p = h()
-    var stream_created = false
-    s.pipe(select(selector, function (elem) {
-      if (!stream_created) {
-        stream_created = true
-        elem
-          .createReadStream(opts)
-          .pipe(p)
-      }
-    }))
-    .once('end', function () {
-      if (!stream_created) p.end()
-    })
-    .resume()
-    return p
-  })
+util.inherits(Find, Rheo)
+
+function Find (selector) {
+  Rheo.call(this, {objectMode: true})
+  this.state = BEFORE
+  this.check = cssauron(selector)
+  this.through = new Deque()
 }
+var BEFORE = {}
+var THROUGH = {}
+var AFTER = {}
+
+Find.prototype._transform = function (queue, enc, cb) {
+  var obj = queue.dequeue()
+  while (obj !== undefined) {
+    if (this.state === BEFORE) {
+      if (obj.type === 'open') {
+        if (this.check(obj)) {
+          this.open = obj
+          this.through.enqueue(obj)
+          this.state = THROUGH
+        }
+      }
+    } else if (this.state === THROUGH) {
+      if (obj.type === 'close' && obj.open === this.open) this.state = AFTER
+      this.through.enqueue(obj)
+    }
+    obj = queue.dequeue()
+  }
+  cb()
+}
+
+Find.prototype._flush = function (cb) {
+  this.push(this.through)
+  cb()
+}
+

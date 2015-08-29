@@ -58,15 +58,21 @@ describe('rheo', function () {
       .on('data', c.data)
       .on('end', c.end)
   })
-  it.skip('exctracts subtemplates', function (done) {
-    var template = rheo(html)
+  it('exctracts subtemplates', function (done) {
+    var c = checker(done, h1)
+    rheo(html)
      .find('h1')
-    should_render(done, template, h1)
+     .render()
+     .on('data', c.data)
+     .on('end', c.end)
   })
-  it.skip('exctracts only first subtemplates', function (done) {
-    var template = rheo(html_with_multiple_h1)
+  it('exctracts only first subtemplates', function (done) {
+    var c = checker(done, h1)
+    rheo(html_with_multiple_h1)
      .find('h1')
-    should_render(done, template, h1)
+     .render()
+     .on('data', c.data)
+     .on('end', c.end)
   })
   it('replaces content', function (done) {
     var c = checker(done, hello_rheo)

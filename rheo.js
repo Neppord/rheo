@@ -27,6 +27,11 @@ Rheo.prototype.replace = function (selector, obj) {
   }
 }
 
+Rheo.prototype.find = function (selector) {
+  var Find = require('./find')
+  return this.pipe(new Find(selector))
+}
+
 function stream_wraper (stream) {
   return function () {
     return stream
