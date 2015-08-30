@@ -26,6 +26,7 @@ Rheo.prototype.replace = function (selector, obj) {
     return this.pipe(new Replace(selector, value(obj)))
   }
 }
+Rheo.prototype.outer = Rheo.prototype.replace
 
 Rheo.prototype.find = function (selector) {
   var Find = require('./find')
