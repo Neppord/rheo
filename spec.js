@@ -70,14 +70,14 @@ describe('rheo', function () {
   })
   it('chains when replacing content', function (done) {
     checker(done, fluffy_puff_html)(
-    rheo(pet_template)
-      .inner('.pet-name', function () {
-        return rheo('Fluffy Puff')
-      }).inner('.pet-type', function () {
-        return rheo('Rabbit')
-      }).inner('.pet-age', function () {
-        return rheo('3')
-      }).render()
+      rheo(pet_template)
+        .inner('.pet-name', function () {
+          return rheo('Fluffy Puff')
+        }).inner('.pet-type', function () {
+          return rheo('Rabbit')
+        }).inner('.pet-age', function () {
+          return rheo('3')
+        }).render()
     )
   })
   it('gives you the content you replace', function (done) {
@@ -181,6 +181,11 @@ describe('rheo', function () {
         t.find('.selected').map(function (t, d) {return t})
       )
     }
+  })
+  it('supports first-child', function (done) {
+    var list = '<ul><li>first</li><li>second</li></ul>'
+    var result = '<li>first</li>'
+    checker(done, result)(rheo(list).find('li:first-child').render())
   })
 })
 
