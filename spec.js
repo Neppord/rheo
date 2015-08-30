@@ -113,6 +113,10 @@ describe('rheo', function () {
   it('replaces attributes with shorthand', function (done) {
     checker(done, h1_bold)(rheo(h1).attribute('h1', 'class', 'bold').render())
   })
+  it('replaces every attributes with shorthand', function (done) {
+    var result = h1_bold + h1_bold
+    checker(done, result)(rheo(h1 + h1).every_attribute('h1', 'class', 'bold').render())
+  })
   it('replaces multiple attributes', function (done) {
     checker(done, top_heading)(rheo(h1).attributes('h1', {
       'class': function () {
