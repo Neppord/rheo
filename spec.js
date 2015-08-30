@@ -46,14 +46,14 @@ describe('rheo', function () {
     checker(done, h1)(rheo(html_with_multiple_h1).find('h1').render())
   })
   it('replaces content', function (done) {
-    checker(done, hello_rheo)(rheo(html).replace('h1', callback).render())
+    checker(done, hello_rheo)(rheo(html).outer('h1', callback).render())
     function callback (subtemplate) {
       return rheo('<h1>Hello Rheo</h1>')
     }
   })
   it('replaces content with a given stream', function (done) {
     var stream = rheo('<h1>Hello Rheo</h1>')
-    checker(done, hello_rheo)(rheo(html).replace('h1', stream).render())
+    checker(done, hello_rheo)(rheo(html).outer('h1', stream).render())
   })
   it('replaces inner content', function (done) {
     checker(done, hello_rheo)(rheo(html).inner('h1', callback).render())
@@ -78,7 +78,7 @@ describe('rheo', function () {
     )
   })
   it('gives you the content you replace', function (done) {
-    checker(done, hello_rheo)(rheo(html).replace('h1', callback).render())
+    checker(done, hello_rheo)(rheo(html).outer('h1', callback).render())
     function callback (h1_template) {
       return h1_template.inner('h1', rheo('Hello Rheo'))
     }

@@ -18,15 +18,14 @@ Rheo.prototype.render = function () {
   return this.pipe(new Render())
 }
 
-Rheo.prototype.replace = function (selector, obj) {
-  var Replace = require('./replace')
+Rheo.prototype.outer = function (selector, obj) {
+  var Outer = require('./outer')
   if (typeof obj === 'function') {
-    return this.pipe(new Replace(selector, obj))
+    return this.pipe(new Outer(selector, obj))
   } else if (typeof obj.pipe === 'function') {
-    return this.pipe(new Replace(selector, value(obj)))
+    return this.pipe(new Outer(selector, value(obj)))
   }
 }
-Rheo.prototype.outer = Rheo.prototype.replace
 
 Rheo.prototype.find = function (selector) {
   var Find = require('./find')

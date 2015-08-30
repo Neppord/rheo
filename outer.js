@@ -1,12 +1,12 @@
-module.exports = Replace
+module.exports = Outer
 var Rheo = require('./rheo')
 var util = require('util')
 var cssauron = require('./cssauron')
 var Deque = require('double-ended-queue')
 
-util.inherits(Replace, Rheo)
+util.inherits(Outer, Rheo)
 
-function Replace (selector, callback) {
+function Outer (selector, callback) {
   Rheo.call(this, {objectMode: true})
   this.callback = callback
   this.state = BEFORE
@@ -20,7 +20,7 @@ var BEFORE = {}
 var THROUGH = {}
 var AFTER = {}
 
-Replace.prototype._transform = function (queue, enc, cb) {
+Outer.prototype._transform = function (queue, enc, cb) {
   var obj = queue.dequeue()
   while (obj !== undefined) {
     switch (this.state) {
@@ -52,7 +52,7 @@ Replace.prototype._transform = function (queue, enc, cb) {
   cb()
 }
 
-Replace.prototype._flush = function (cb) {
+Outer.prototype._flush = function (cb) {
   var self = this
   var rheo = new Rheo({objectMode: true})
   var callback = this.callback
