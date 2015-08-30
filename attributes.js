@@ -8,9 +8,9 @@ util.inherits(Atribute, Rheo)
 
 function Atribute (selector, hash) {
   Rheo.call(this, {objectMode: true})
-  this.hash = hash
-  this.state = BEFORE
-  this.check = cssauron(selector)
+  this._hash = hash
+  this._state = BEFORE
+  this._check = cssauron(selector)
 }
 
 var BEFORE = {}
@@ -20,10 +20,10 @@ Atribute.prototype._transform = function (queue, enc, cb) {
   var ret = new Deque(queue.length)
   var obj = queue.dequeue()
   while (obj !== undefined) {
-    switch (this.state) {
+    switch (this._state) {
       case BEFORE:
-        if (obj.type === 'open' && this.check(obj)) {
-          var hash = this.hash
+        if (obj.type === 'open' && this._check(obj)) {
+          var hash = this._hash
           for (var key in hash) {
             if (hash.hasOwnProperty(key)) {
               var func = hash[key]
@@ -31,7 +31,7 @@ Atribute.prototype._transform = function (queue, enc, cb) {
               obj.attrs[key] = attr
             }
           }
-          this.state = AFTER
+          this._state = AFTER
         }
         ret.enqueue(obj)
         break

@@ -121,6 +121,13 @@ describe('rheo', function () {
     checker(done, result)(rheo(h1 + h1).every_attribute('h1', 'class', 'bold').render())
   })
   it('replaces multiple attributes', function (done) {
+    checker(done, top_heading)(rheo(h1)
+      .attribute('h1', 'class', 'bold')
+      .attribute('h1', 'id', 'top_heading')
+      .render()
+    )
+  })
+  it('replaces multiple attributes with object', function (done) {
     checker(done, top_heading)(rheo(h1).attributes('h1', {
       'class': function () {
         return 'bold'

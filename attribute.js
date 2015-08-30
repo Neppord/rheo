@@ -8,10 +8,10 @@ util.inherits(Attribute, Rheo)
 
 function Attribute (selector, attribute, callback) {
   Rheo.call(this, {objectMode: true})
-  this.callback = callback
-  this.attribute = attribute
-  this.state = BEFORE
-  this.check = cssauron(selector)
+  this._callback = callback
+  this._attribute = attribute
+  this._state = BEFORE
+  this._check = cssauron(selector)
 }
 
 var BEFORE = {}
@@ -21,11 +21,11 @@ Attribute.prototype._transform = function (queue, enc, cb) {
   var ret = new Deque(queue.length)
   var obj = queue.dequeue()
   while (obj !== undefined) {
-    switch (this.state) {
+    switch (this._state) {
       case BEFORE:
-        if (obj.type === 'open' && this.check(obj)) {
-          obj.attrs[this.attribute] = this.callback(obj.attrs[this.attribute])
-          this.state = AFTER
+        if (obj.type === 'open' && this._check(obj)) {
+          obj.attrs[this._attribute] = this._callback(obj.attrs[this._attribute])
+          this._state = AFTER
         }
         ret.enqueue(obj)
         break

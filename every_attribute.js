@@ -8,17 +8,17 @@ util.inherits(EveryAttribute, Rheo)
 
 function EveryAttribute (selector, attribute, callback) {
   Rheo.call(this, {objectMode: true})
-  this.callback = callback
-  this.attribute = attribute
-  this.check = cssauron(selector)
+  this._callback = callback
+  this._attribute = attribute
+  this._check = cssauron(selector)
 }
 
 EveryAttribute.prototype._transform = function (queue, enc, cb) {
   var ret = new Deque(queue.length)
   var obj = queue.dequeue()
   while (obj !== undefined) {
-    if (obj.type === 'open' && this.check(obj)) {
-      obj.attrs[this.attribute] = this.callback(obj.attrs[this.attribute])
+    if (obj.type === 'open' && this._check(obj)) {
+      obj.attrs[this._attribute] = this._callback(obj.attrs[this._attribute])
     }
     ret.enqueue(obj)
     obj = queue.dequeue()
