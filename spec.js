@@ -156,7 +156,7 @@ function checker (done, html) {
   }
   function helper (stream) {
     stream.on('data', data)
-    return stream.on('end', end)
+    return stream.once('end', end)
   }
   helper.data = data
   helper.end = end

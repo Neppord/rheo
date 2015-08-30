@@ -22,7 +22,8 @@ Parse.prototype._onopentag = function (name, attrs) {
   var obj = {
     type: 'open',
     name: name,
-    attrs: attrs
+    attrs: attrs,
+    parent: this.open_stack.peekBack() || null
   }
   this.open_stack.push(obj)
   this.queue.enqueue(obj)

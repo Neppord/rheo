@@ -22,20 +22,31 @@ var AFTER = {}
 Inner.prototype._transform = function (queue, enc, cb) {
   var obj = queue.dequeue()
   while (obj !== undefined) {
-    if (this.state === BEFORE) {
-      if (obj.type === 'open') {
-        if (this.check(obj)) {
-          this.open = obj
-          this.state = THROUGH
+    switch (this.state) {
+      case BEFORE:
+        if (obj.type === 'open') {
+          if (this.check(obj)) {
+            this.open = obj
+            this.state = THROUGH
+          }
+          this.before.enqueue(obj)
+        } else {
+          this.before.enqueue(obj)
         }
-        this.before.enqueue(obj)
-      } else this.before.enqueue(obj)
-    } else if (this.state === THROUGH) {
-      if (obj.type === 'close' && obj.open === this.open) {
-        this.state = AFTER
+        break
+      case THROUGH:
+        if (obj.parent === this.open) obj.parent = null
+        if (obj.type === 'close' && obj.open === this.open) {
+          this.state = AFTER
+          this.after.enqueue(obj)
+        } else {
+          this.through.enqueue(obj)
+        }
+        break
+      case AFTER:
         this.after.enqueue(obj)
-      } else this.through.enqueue(obj)
-    } else if (this.state === AFTER) this.after.enqueue(obj)
+        break
+    }
     obj = queue.dequeue()
   }
   cb()
@@ -48,11 +59,22 @@ Inner.prototype._flush = function (cb) {
   rheo.end(this.through)
   var ret = callback(rheo)
   this.push(this.before)
+  var first = true
   ret.on('data', function (queue) {
+    if (first) {
+      first = false
+      queue.peekFront().parent = this.open
+    }
     self.push(queue)
   })
-  ret.on('end', function (queue) {
-    if (queue) self.push(queue)
+  ret.once('end', function (queue) {
+    if (queue) {
+      if (first) {
+        first = false
+        queue.peekFront().parent = this.open
+      }
+      self.push(queue)
+    }
     self.push(self.after)
     cb()
   })
