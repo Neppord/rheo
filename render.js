@@ -1,6 +1,7 @@
 module.exports = Render
 var Rheo = require('./rheo')
 var util = require('util')
+var void_elements = require('void-elements')
 
 util.inherits(Render, Rheo)
 
@@ -23,7 +24,7 @@ Render.prototype._transform = function (queue, enc, cb) {
       }
       text = text + '>'
       this.push(text)
-    } else if (obj.type === 'close') {
+    } else if (obj.type === 'close' && void_elements[obj.name] !== true) {
       this.push('</' + obj.name + '>')
     }
     obj = queue.dequeue()

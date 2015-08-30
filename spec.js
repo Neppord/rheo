@@ -39,6 +39,9 @@ describe('rheo', function () {
   it('handles empty strings', function (done) {
     checker(done, '')(rheo('').render())
   })
+  it('handles br', function (done) {
+    checker(done, '<br>')(rheo('<br>').render())
+  })
   it('exctracts subtemplates', function (done) {
     checker(done, h1)(rheo(html).find('h1').render())
   })
