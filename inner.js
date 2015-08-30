@@ -14,6 +14,7 @@ function Inner (selector, callback) {
   this.before = new Deque()
   this.after = new Deque()
   this.through = new Deque()
+  this.open = null
 }
 var BEFORE = {}
 var THROUGH = {}
@@ -60,12 +61,12 @@ Inner.prototype._flush = function (cb) {
   var ret = callback(rheo)
   this.push(this.before)
   ret.on('data', function (queue) {
-    self.open.insert(queue)
+    if (self.open) self.open.insert(queue)
     self.push(queue)
   })
   ret.once('end', function (queue) {
     if (queue) {
-      self.open.insert(queue)
+      if (self.open) self.open.insert(queue)
       self.push(queue)
     }
     self.push(self.after)
