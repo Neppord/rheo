@@ -31,9 +31,6 @@
   "dependencies": {
     "cssauron": "^1.2.0",
     "double-ended-queue": "^0.9.7",
-    "highland": "^2.5.1",
-    "html-select": "^2.3.24",
-    "html-tokenize": "^1.2.5",
     "htmlparser2": "^3.8.3",
     "void-elements": "^2.0.1"
   },
@@ -41,6 +38,7 @@
     "chai": "^3.2.0",
     "istanbul": "^0.3.17",
     "mocha": "^2.2.5",
+    "highland": "^2.5.1",
     "standard": "^4.5.4"
   }
 }
