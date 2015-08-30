@@ -5,6 +5,8 @@ var util = require('util')
 var htmlparser2 = require('htmlparser2')
 var Deque = require('double-ended-queue')
 
+var MARKER = {}
+
 util.inherits(Parse, Rheo)
 
 function Parse () {
@@ -19,12 +21,11 @@ function Parse () {
 }
 
 Parse.prototype._onopentag = function (name, attrs) {
-  var obj = {
-    type: 'open',
-    name: name,
-    attrs: attrs,
-    parent: this.open_stack.peekBack() || null
-  }
+  var obj = new OpenTag(
+    name,
+    attrs,
+    this.open_stack.peekBack()
+  )
   this.open_stack.push(obj)
   this.queue.enqueue(obj)
 }
@@ -54,4 +55,26 @@ Parse.prototype._flush = function (cb) {
   this.parser.end()
   this.push(this.queue)
   cb()
+}
+
+function OpenTag (name, attrs, parent) {
+  this.type = 'open'
+  this.name = name
+  this.attrs = attrs
+  this.parent = parent || null
+}
+
+OpenTag.prototype.insert = function (queue) {
+  queue.enqueue(MARKER)
+  var obj = queue.dequeue()
+  while (obj !== MARKER) {
+    if (obj.parent === null) obj.parent = this
+    queue.enqueue(obj)
+    obj = queue.dequeue()
+  }
+  return queue
+}
+
+OpenTag.prototype.detatch = function () {
+  this.parent = null
 }

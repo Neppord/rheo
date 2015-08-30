@@ -35,7 +35,7 @@ Inner.prototype._transform = function (queue, enc, cb) {
         }
         break
       case THROUGH:
-        if (obj.parent === this.open) obj.parent = null
+        if (obj.parent === this.open) obj.detatch()
         if (obj.type === 'close' && obj.open === this.open) {
           this.state = AFTER
           this.after.enqueue(obj)
@@ -59,24 +59,16 @@ Inner.prototype._flush = function (cb) {
   rheo.end(this.through)
   var ret = callback(rheo)
   this.push(this.before)
-  var first = true
   ret.on('data', function (queue) {
-    if (first) {
-      first = false
-      queue.peekFront().parent = this.open
-    }
+    self.open.insert(queue)
     self.push(queue)
   })
   ret.once('end', function (queue) {
     if (queue) {
-      if (first) {
-        first = false
-        queue.peekFront().parent = this.open
-      }
+      self.open.insert(queue)
       self.push(queue)
     }
     self.push(self.after)
     cb()
   })
 }
-

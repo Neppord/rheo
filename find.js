@@ -24,7 +24,7 @@ Find.prototype._transform = function (queue, enc, cb) {
         if (obj.type === 'open') {
           if (this.check(obj)) {
             this.open = obj
-            obj.parent = null
+            obj.detatch()
             this.through.enqueue(obj)
             this.state = THROUGH
           }

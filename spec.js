@@ -142,6 +142,43 @@ describe('rheo', function () {
     })
     checker(done, h1_bold)(template.pipe(pipeline).render())
   })
+  it('selects on parent path', function (done) {
+    var result = (
+      '<div class="pet">' +
+      '<h1 class="pet-name" data-test="true"></h1>' +
+      '<div class="pet-type"></div>' +
+      '<div class="pet-age"></div>' +
+      '</div>'
+    )
+    checker(done, result)(
+      rheo(pet_template)
+        .attribute('.pet .pet-name', 'data-test', 'true')
+        .render()
+    )
+  })
+  it('corrects parent path even when adding multiple children', function (done) {
+    var result = (
+      '<ul class="menu"><li class="menu-item selected" data-test="true">\n' +
+      '    <a class="menu-link menu-title active" href="#">\n' +
+      '      link title\n' +
+      '    </a>\n' +
+      '  </li><li class="menu-item selected" data-test="true">\n' +
+      '    <a class="menu-link menu-title active" href="#">\n' +
+      '      link title\n' +
+      '    </a>\n' +
+      '  </li></ul>\n'
+    )
+    checker(done, result)(
+      rheo(layout_with_menu).inner('.menu', callback)
+        .every_attribute('ul li', 'data-test', 'true')
+        .render()
+    )
+    function callback (t) {
+      return h([1, 2]).pipe(
+        t.find('.selected').map(function (t, d) {return t})
+      )
+    }
+  })
 })
 
 function checker (done, html) {

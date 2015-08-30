@@ -29,7 +29,7 @@ Replace.prototype._transform = function (queue, enc, cb) {
           if (this.check(obj)) {
             this.open = obj
             this.parent = obj.parent
-            obj.parent = null
+            obj.detatch()
             this.through.enqueue(obj)
             this.state = THROUGH
           } else {
@@ -59,20 +59,13 @@ Replace.prototype._flush = function (cb) {
   rheo.end(this.through)
   var ret = callback(rheo)
   this.push(this.before)
-  var first = true
   ret.on('data', function (queue) {
-    if (first) {
-      first = false
-      queue.peekFront.parent = this.parent
-    }
+    self.parent.insert(queue)
     self.push(queue)
   })
   ret.once('end', function (queue) {
     if (queue) {
-      if (first) {
-        first = false
-        queue.peekFront.parent = this.parent
-      }
+      self.parent.insert(queue)
       self.push(queue)
     }
     self.push(self.after)
