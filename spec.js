@@ -133,9 +133,9 @@ describe('rheo', function () {
       'id': 'top_heading'
     }).render())
   })
-  it('creates pipelines easy with chain', function (done) {
+  it('creates templates easy with a callback', function (done) {
     var template = rheo(html)
-    var pipeline = rheo.chain(function (stream) {
+    var pipeline = rheo.template(function (stream) {
       return stream
         .find('h1')
         .attribute('h1', 'class', function () {return 'bold'})

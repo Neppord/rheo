@@ -1,9 +1,9 @@
 module.exports = rheo
 var Parse = require('./parse')
-var Pipeline = require('./pipeline')
+var Pipeline = require('./template')
 var Rheo = require('./rheo')
 
-rheo.chain = rheo.pipeline = pipeline
+rheo.template = template
 
 function rheo (html) {
   if (arguments.length === 0) return new Parse()
@@ -14,7 +14,7 @@ function rheo (html) {
   }
 }
 
-function pipeline (callback) {
+function template (callback) {
   if (callback) return new Pipeline(callback)
   else return new Rheo({objectMode: true})
 }
