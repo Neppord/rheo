@@ -19,7 +19,7 @@ rheo('<h1>Hello Rheo!</h1>').render().pipe(req)
 
 \\ or
 
-html_stream,pipe(rheo()).render().pipe(req)
+html_stream.pipe(rheo()).render().pipe(req)
 ```
 
 ## Using CSS selectors
@@ -28,8 +28,8 @@ That was not really exciting, right? Let's do something more fun and change
 the message from the last "exercise".
 
 ```js
-html_stream,pipe(rheo())
-  .replace.inner('h1', function (inner_template) {
+html_stream.pipe(rheo())
+  .inner('h1', function (inner_template) {
     return rheo('Hello Template')
   })
   .render()
@@ -39,13 +39,13 @@ html_stream,pipe(rheo())
 or the short hand:
 
 ```js
-html_stream,pipe(rheo())
-  .replace.inner('h1', rheo('Hello Template'))
+html_stream.pipe(rheo())
+  .inner('h1', rheo('Hello Template'))
   .render()
   .pipe(req)
 ```
 
-Replace and replace.inner both return a new rheo stream and you could chain
+Outer and inner both return a new rheo stream and you could chain
 multiple of these calls and shape your template.
 
 ## Changing attributes
@@ -57,8 +57,8 @@ unifying the interface.
 
 
 ```js
-html_stream,pipe(rheo())
-  .replace.attribute('h1', 'class', function (old_value) {
+html_stream.pipe(rheo())
+  .attribute('h1', 'class', function (old_value) {
     return old_value + ' rainbow'
   })
   .render()
@@ -68,8 +68,8 @@ html_stream,pipe(rheo())
 Or shorthand if there is no other classes.
 
 ```js
-html_stream,pipe(rheo())
-  .replace.attribute('h1', 'class', 'rainbow')
+html_stream.pipe(rheo())
+  .attribute('h1', 'class', 'rainbow')
   .render()
   .pipe(req)
 ```
@@ -81,8 +81,8 @@ If you would like to change multiple attributes on the same element there is a
 shorthand for that to.
 
 ```js
-html_stream,pipe(rheo())
-  .replace.attributes('a', {
+html_stream.pipe(rheo())
+  .attributes('a', {
     'class': 'rainbow',
     'href': '#rainbow_power'
   })
@@ -105,8 +105,8 @@ replacing a content with one of its elements.
 ```
 
 ```js
-html_stream,pipe(rheo())
-  .replace.inner('fortune', function (fortunes) {
+html_stream.pipe(rheo())
+  .inner('fortune', function (fortunes) {
     return fortunes.find('.fortuen-good')
   })
   .render()
@@ -124,9 +124,9 @@ Take a look at this *view controller*.
 ```js
 function render_pet(template, data) {
   return template
-    .replace.inner('pet-name', function () {return rheo(data.name)})
-    .replace.inner('pet-age', function () {return rheo(data.age.toString())})
-    .replace.inner('pet-type', function () {return rheo(data.type)})
+    .inner('pet-name', function () {return rheo(data.name)})
+    .inner('pet-age', function () {return rheo(data.age.toString())})
+    .inner('pet-type', function () {return rheo(data.type)})
 }
 ```
 
@@ -137,8 +137,8 @@ pets.
 It works fine now to render one, but how do we render all list items?
 
 ```js
-html_stream,pipe(rheo())
-  .replace.inner('.pet-list', function (pet_template) {
+html_stream.pipe(rheo())
+  .inner('.pet-list', function (pet_template) {
     var pet_template_stream = pet_template.map(render_pet)
     return pet_data_stream.pipe(pet_template_stream)
   })
@@ -170,20 +170,21 @@ Rheo templates can be piped together like so:
 ```js
 function select_menu(menu_name) {
   var selector = '.menu .menu-item.' + menu_name
-  return rheo.chain(function (stream) {
+  return rheo.template(function (stream) {
     return stream
-      .replace.attribute(selector, 'class', function (classes) {
+      .attribute(selector, 'class', function (classes) {
         return classes + ' selected'
       })
-      .replace.attribute(selector + ' a', 'href', function () {
+      .attribute(selector + ' a', 'href', function () {
         return '#'
       })
   })
 }
 
 function set_title(title) {
-  return rheo.chain()
-    .replace.inner('title', function () {return rheo(title)})
+  return rheo.template(function (s) {
+    return s.inner('title', rheo(title))
+  })
 }
 
 page_template
@@ -223,11 +224,11 @@ performence. Neat huh!?
 ```js
 var rheo = require('rheo')
 html_stream.pipe(rheo())
-  .replace.inner('.things', function (items) {
+  .inner('.things', function (items) {
     var item_template_stream = items.map(function (template, data) {
       return template
         .find(data.done? ".done": ".pending")
-        .replace.inner(".title", function () {
+        .inner(".title", function () {
           return rheo(data,title)
         })
     })
