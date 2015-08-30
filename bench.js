@@ -34,7 +34,7 @@ function bench () {
     .render()
     .on('data', function (data) {})
     .on('error', function (error) {console.log(error)})
-    .on('end', function () {
+    .once('end', function () {
       var arr = process.hrtime(start)
       var diff = arr[1] + arr[0] * 1e9
       min = Math.min(diff, min)
