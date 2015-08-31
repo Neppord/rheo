@@ -6,7 +6,6 @@ var htmlparser2 = require('htmlparser2')
 var Deque = require('double-ended-queue')
 
 var MARKER = {}
-var NULL_OPEN_TAG = new NullOpenTag()
 
 util.inherits(Parse, Rheo)
 
@@ -25,7 +24,7 @@ Parse.prototype._onopentag = function (name, attrs) {
   var obj = new OpenTag(
     name,
     attrs,
-    this.open_stack.peekBack() || NULL_OPEN_TAG
+    this.open_stack.peekBack() || null
   )
   this.open_stack.push(obj)
   this.queue.enqueue(obj)
@@ -64,7 +63,7 @@ function OpenTag (name, attrs, parent) {
   this.attrs = attrs
   this.parent = parent
   this.children = new Deque()
-  this.parent.add_child(this)
+  if (this.parent) this.parent.add_child(this)
 }
 
 OpenTag.prototype.add_child = function (child) {
@@ -85,7 +84,7 @@ OpenTag.prototype.insert = function (queue) {
   queue.enqueue(MARKER)
   var obj = queue.dequeue()
   while (obj !== MARKER) {
-    if (obj.type === 'open' && obj.parent.is_null()) {
+    if (obj.type === 'open' && obj.parent === null) {
       obj.parent = this
       this.add_child(obj)
     }
@@ -96,18 +95,7 @@ OpenTag.prototype.insert = function (queue) {
 }
 
 OpenTag.prototype.detatch = function () {
-  this.parent.remove_child(this)
-  this.parent = NULL_OPEN_TAG
+  if (this.parent) this.parent.remove_child(this)
+  this.parent = null
 }
 
-OpenTag.prototype.is_null = function () {return false}
-
-function NullOpenTag () {
-  this.parent = this
-}
-
-NullOpenTag.prototype.detatch = function () {}
-NullOpenTag.prototype.insert = function () {}
-NullOpenTag.prototype.add_child = function () {}
-NullOpenTag.prototype.remove_child = function () {}
-NullOpenTag.prototype.is_null = function () {return true}
