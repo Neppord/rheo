@@ -1,8 +1,9 @@
 var cssauron = require('cssauron')
 module.exports = cssauron({
   tag: 'name',
-  attr: function (node, attr) {return node.attrs[attr]},
-  'class': function (node) {return node.attrs['class']},
+  'id': function (node) {return node && node.attrs['id'] || ''},
+  attr: function (node, attr) {return node && node.attrs[attr] || ''},
+  'class': function (node) {return node && node.attrs['class'] || ''},
   'parent': 'parent',
-  children: 'children'
+  children: function (node) {return node && node.children.toArray() || [] }
 })

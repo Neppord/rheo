@@ -1,8 +1,10 @@
 module.exports = Inner
-var Rheo = require('./rheo')
-var util = require('util')
-var cssauron = require('./cssauron')
 var Deque = require('double-ended-queue')
+var util = require('util')
+
+var cssauron = require('./cssauron')
+var Rheo = require('./rheo')
+var Document = require('./document')
 
 util.inherits(Inner, Rheo)
 
@@ -15,7 +17,9 @@ function Inner (selector, callback) {
   this.after = new Deque()
   this.through = new Deque()
   this.open = null
+  this.document = new Document()
 }
+
 var BEFORE = {}
 var THROUGH = {}
 var AFTER = {}
@@ -36,7 +40,7 @@ Inner.prototype._transform = function (queue, enc, cb) {
         }
         break
       case THROUGH:
-        if (obj.parent === this.open) obj.detatch()
+        if (obj.parent === this.open) this.document.add_child(obj)
         if (obj.type === 'close' && obj.open === this.open) {
           this.state = AFTER
           this.after.enqueue(obj)
@@ -54,6 +58,7 @@ Inner.prototype._transform = function (queue, enc, cb) {
 }
 
 Inner.prototype._flush = function (cb) {
+  var accum = new Deque()
   var self = this
   var rheo = new Rheo({objectMode: true})
   var callback = this.callback
@@ -61,15 +66,16 @@ Inner.prototype._flush = function (cb) {
   var ret = callback(rheo)
   this.push(this.before)
   ret.on('data', function (queue) {
-    if (self.open) self.open.insert(queue)
-    self.push(queue)
+    accum.enqueue.apply(accum, queue.toArray())
   })
   ret.once('end', function (queue) {
-    if (queue) {
-      if (self.open) self.open.insert(queue)
-      self.push(queue)
+    if (queue) accum.enqueue.apply(accum, queue.toArray())
+    if (!accum.isEmpty()) {
+      var document = accum.peekFront().parent
+      document.move_children(self.open)
     }
-    self.push(self.after)
+    accum.enqueue.apply(accum, self.after.toArray())
+    self.push(accum)
     cb()
   })
 }

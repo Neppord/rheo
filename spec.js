@@ -104,7 +104,8 @@ describe('rheo', function () {
     checker(done, result)(rheo(layout_with_menu).inner('.menu', callback).render())
     function callback (t) {
       return h([1]).pipe(
-        t.find('.selected').map(function (t, d) {return t})
+        t.find('.selected')
+          .map(function (t, d) {return t})
       )
     }
   })
@@ -193,6 +194,9 @@ describe('rheo', function () {
     var list = '<ul><li>first</li><li>second</li></ul>'
     var result = '<li>first</li>'
     checker(done, result)(rheo(list).find('li:first-child').render())
+  })
+  it('supports first-child that is root', function (done) {
+    checker(done, h1)(rheo(h1).find('h1:first-child').render())
   })
 })
 

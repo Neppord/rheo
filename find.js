@@ -1,8 +1,10 @@
 module.exports = Find
-var Rheo = require('./rheo')
 var util = require('util')
-var cssauron = require('./cssauron')
 var Deque = require('double-ended-queue')
+
+var cssauron = require('./cssauron')
+var Rheo = require('./rheo')
+var Document = require('./document')
 
 util.inherits(Find, Rheo)
 
@@ -11,6 +13,7 @@ function Find (selector) {
   this.state = BEFORE
   this.check = cssauron(selector)
   this.through = new Deque()
+  this.document = new Document()
 }
 var BEFORE = {}
 var THROUGH = {}
@@ -24,7 +27,7 @@ Find.prototype._transform = function (queue, enc, cb) {
         if (obj.type === 'open') {
           if (this.check(obj)) {
             this.open = obj
-            obj.detatch()
+            this.document.add_child(obj)
             this.through.enqueue(obj)
             this.state = THROUGH
           }

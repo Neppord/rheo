@@ -1,8 +1,11 @@
 module.exports = Outer
-var Rheo = require('./rheo')
-var util = require('util')
-var cssauron = require('./cssauron')
+
 var Deque = require('double-ended-queue')
+var util = require('util')
+
+var cssauron = require('./cssauron')
+var Rheo = require('./rheo')
+var Document = require('./document')
 
 util.inherits(Outer, Rheo)
 
@@ -15,6 +18,7 @@ function Outer (selector, callback) {
   this.after = new Deque()
   this.through = new Deque()
   this.open = null
+  this.document = new Document()
 }
 var BEFORE = {}
 var THROUGH = {}
@@ -29,7 +33,7 @@ Outer.prototype._transform = function (queue, enc, cb) {
           if (this.check(obj)) {
             this.open = obj
             this.parent = obj.parent
-            obj.detatch()
+            this.document.add_child(obj)
             this.through.enqueue(obj)
             this.state = THROUGH
           } else {
@@ -53,6 +57,7 @@ Outer.prototype._transform = function (queue, enc, cb) {
 }
 
 Outer.prototype._flush = function (cb) {
+  var accum = new Deque()
   var self = this
   var rheo = new Rheo({objectMode: true})
   var callback = this.callback
@@ -60,15 +65,14 @@ Outer.prototype._flush = function (cb) {
   var ret = callback(rheo)
   this.push(this.before)
   ret.on('data', function (queue) {
-    self.parent.insert(queue)
-    self.push(queue)
+    accum.enqueue.apply(accum, queue.toArray())
   })
   ret.once('end', function (queue) {
-    if (queue) {
-      self.parent.insert(queue)
-      self.push(queue)
-    }
-    self.push(self.after)
+    if (queue) accum.enqueue.apply(accum, queue.toArray())
+    var document = accum.peekFront().parent
+    document.move_children(self.parent)
+    accum.enqueue.apply(accum, self.after.toArray())
+    self.push(accum)
     cb()
   })
 }

@@ -5,12 +5,14 @@ var util = require('util')
 var htmlparser2 = require('htmlparser2')
 var Deque = require('double-ended-queue')
 
-var MARKER = {}
+var OpenTag = require('./open_tag')
+var Document = require('./document')
 
 util.inherits(Parse, Rheo)
 
 function Parse () {
   Rheo.call(this, {objectMode: true})
+  this.document = new Document()
   this.queue = new Deque()
   this.open_stack = new Deque()
   this.parser = new htmlparser2.Parser({
@@ -21,13 +23,18 @@ function Parse () {
 }
 
 Parse.prototype._onopentag = function (name, attrs) {
-  var obj = new OpenTag(
+  var parent = (
+    this.open_stack.peekBack() ||
+    this.document
+  )
+  var open_tag = new OpenTag(
     name,
     attrs,
-    this.open_stack.peekBack() || null
+    parent
   )
-  this.open_stack.push(obj)
-  this.queue.enqueue(obj)
+  parent.add_child(open_tag)
+  this.open_stack.push(open_tag)
+  this.queue.enqueue(open_tag)
 }
 
 Parse.prototype._onclosetag = function (name) {
@@ -40,9 +47,11 @@ Parse.prototype._onclosetag = function (name) {
 }
 
 Parse.prototype._ontext = function (text) {
+  var open = this.open_stack.peekBack()
   this.queue.enqueue({
     type: 'text',
-    value: text
+    value: text,
+    parent: open || this.document
   })
 }
 
@@ -56,46 +65,3 @@ Parse.prototype._flush = function (cb) {
   this.push(this.queue)
   cb()
 }
-
-function OpenTag (name, attrs, parent) {
-  this.type = 'open'
-  this.name = name
-  this.attrs = attrs
-  this.parent = parent
-  this.children = new Deque()
-  if (this.parent) this.parent.add_child(this)
-}
-
-OpenTag.prototype.add_child = function (child) {
-  this.children.enqueue(child)
-}
-
-OpenTag.prototype.remove_child = function (child) {
-  var children = this.children
-  children.enqueue(MARKER)
-  var obj = children.dequeue()
-  while (obj !== MARKER) {
-    if (obj !== children) children.enqueue(obj)
-    obj = children.dequeue()
-  }
-}
-
-OpenTag.prototype.insert = function (queue) {
-  queue.enqueue(MARKER)
-  var obj = queue.dequeue()
-  while (obj !== MARKER) {
-    if (obj.type === 'open' && obj.parent === null) {
-      obj.parent = this
-      this.add_child(obj)
-    }
-    queue.enqueue(obj)
-    obj = queue.dequeue()
-  }
-  return queue
-}
-
-OpenTag.prototype.detatch = function () {
-  if (this.parent) this.parent.remove_child(this)
-  this.parent = null
-}
-
