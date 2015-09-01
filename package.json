@@ -1,6 +1,6 @@
 {
   "name": "rheo",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "Templateing lib inspierd by tumpet and hyperstream.",
   "main": "index.js",
   "scripts": {
