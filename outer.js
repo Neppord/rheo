@@ -69,8 +69,10 @@ Outer.prototype._flush = function (cb) {
   })
   ret.once('end', function (queue) {
     if (queue) accum.enqueue.apply(accum, queue.toArray())
-    var document = accum.peekFront().parent
-    document.move_children(self.parent)
+    if (!accum.isEmpty()) {
+      var document = accum.peekFront().parent
+      document.move_children(self.parent)
+    }
     accum.enqueue.apply(accum, self.after.toArray())
     self.push(accum)
     cb()
