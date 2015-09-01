@@ -58,24 +58,29 @@ Inner.prototype._transform = function (queue, enc, cb) {
 }
 
 Inner.prototype._flush = function (cb) {
-  var accum = new Deque()
-  var self = this
-  var rheo = new Rheo({objectMode: true})
-  var callback = this.callback
-  rheo.end(this.through)
-  var ret = callback(rheo)
-  this.push(this.before)
-  ret.on('data', function (queue) {
-    accum.enqueue.apply(accum, queue.toArray())
-  })
-  ret.once('end', function (queue) {
-    if (queue) accum.enqueue.apply(accum, queue.toArray())
-    if (!accum.isEmpty()) {
-      var document = accum.peekFront().parent
-      document.move_children(self.open)
-    }
-    accum.enqueue.apply(accum, self.after.toArray())
-    self.push(accum)
+  if (this.state === BEFORE) {
+    this.push(this.before)
     cb()
-  })
+  } else {
+    var accum = new Deque()
+    var self = this
+    var rheo = new Rheo({objectMode: true})
+    var callback = this.callback
+    rheo.end(this.through)
+    var ret = callback(rheo)
+    this.push(this.before)
+    ret.on('data', function (queue) {
+      accum.enqueue.apply(accum, queue.toArray())
+    })
+    ret.once('end', function (queue) {
+      if (queue) accum.enqueue.apply(accum, queue.toArray())
+      if (!accum.isEmpty()) {
+        var document = accum.peekFront().parent
+        document.move_children(self.open)
+      }
+      accum.enqueue.apply(accum, self.after.toArray())
+      self.push(accum)
+      cb()
+    })
+  }
 }
