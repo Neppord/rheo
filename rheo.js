@@ -20,10 +20,15 @@ Rheo.prototype.render = function () {
 
 Rheo.prototype.outer = function (selector, obj) {
   var Outer = require('./outer')
+  var rheo = require('./')
   if (typeof obj === 'function') {
     return this.pipe(new Outer(selector, obj))
   } else if (typeof obj.pipe === 'function') {
     return this.pipe(new Outer(selector, value(obj)))
+  } else {
+    return this.pipe(new Outer(selector, value(
+      rheo(obj)
+    )))
   }
 }
 

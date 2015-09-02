@@ -58,6 +58,9 @@ describe('rheo', function () {
     var stream = rheo('<h1>Hello Rheo</h1>')
     checker(done, hello_rheo)(rheo(html).outer('h1', stream).render())
   })
+  it('replaces content with a value', function (done) {
+    checker(done, hello_rheo)(rheo(html).outer('h1', '<h1>Hello Rheo</h1>').render())
+  })
   it('replaces inner content', function (done) {
     checker(done, hello_rheo)(rheo(html).inner('h1', callback).render())
     function callback (subtemplate) {
