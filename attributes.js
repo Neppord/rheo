@@ -27,7 +27,7 @@ Atribute.prototype._transform = function (queue, enc, cb) {
           for (var key in hash) {
             if (hash.hasOwnProperty(key)) {
               var func = hash[key]
-              var attr = func(obj.attrs[key])
+              var attr = func(obj.attrs[key]).toString()
               obj.attrs[key] = attr
             }
           }

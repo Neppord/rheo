@@ -24,7 +24,7 @@ Attribute.prototype._transform = function (queue, enc, cb) {
     switch (this._state) {
       case BEFORE:
         if (obj.type === 'open' && this._check(obj)) {
-          obj.attrs[this._attribute] = this._callback(obj.attrs[this._attribute])
+          obj.attrs[this._attribute] = this._callback(obj.attrs[this._attribute]).toString()
           this._state = AFTER
         }
         ret.enqueue(obj)

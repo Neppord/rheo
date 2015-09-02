@@ -18,7 +18,7 @@ EveryAttribute.prototype._transform = function (queue, enc, cb) {
   var obj = queue.dequeue()
   while (obj !== undefined) {
     if (obj.type === 'open' && this._check(obj)) {
-      obj.attrs[this._attribute] = this._callback(obj.attrs[this._attribute])
+      obj.attrs[this._attribute] = this._callback(obj.attrs[this._attribute]).toString()
     }
     ret.enqueue(obj)
     obj = queue.dequeue()
