@@ -68,6 +68,9 @@ describe('rheo', function () {
     var stream = rheo('Hello Rheo')
     checker(done, hello_rheo)(rheo(html).inner('h1', stream).render())
   })
+  it('replaces inner content a given value', function (done) {
+    checker(done, hello_rheo)(rheo(html).inner('h1', 'Hello Rheo').render())
+  })
   it('chains when replacing content', function (done) {
     checker(done, fluffy_puff_html)(
       rheo(pet_template)
@@ -187,6 +190,25 @@ describe('rheo', function () {
     function callback (t) {
       return h([1, 2]).pipe(
         t.find('.selected').map(function (t, d) {return t})
+      )
+    }
+  })
+  it('corrects parent path even when adding multiple children', function (done) {
+    var result = (
+      '<ul class="menu"><li class="menu-item selected" data-test="true">\n' +
+      '    <a class="menu-link menu-title active" href="#">1</a>\n' +
+      '  </li><li class="menu-item selected" data-test="true">\n' +
+      '    <a class="menu-link menu-title active" href="#">2</a>\n' +
+      '  </li></ul>\n'
+    )
+    checker(done, result)(
+      rheo(layout_with_menu).inner('.menu', callback)
+        .every_attribute('ul li', 'data-test', 'true')
+        .render()
+    )
+    function callback (t) {
+      return h([1, 2]).pipe(
+        t.find('.selected').map(function (t, d) {return t.inner('a', d)})
       )
     }
   })
