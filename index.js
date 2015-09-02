@@ -7,7 +7,9 @@ rheo.template = template
 
 function rheo (html) {
   if (arguments.length === 0) return new Parse()
-  else {
+  else if (typeof html.pipe === 'function') {
+    return html.pipe(new Parse())
+  } else {
     var r = new Parse()
     r.end(html)
     return r
