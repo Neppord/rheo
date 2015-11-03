@@ -231,6 +231,10 @@ describe('rheo', function () {
     var html_with_comment = '<!--comment--><p>paragraph</p>'
     checker(done, html_with_comment)(rheo(html_with_comment).render())
   })
+  it('supports deep comments', function (done) {
+    var html_with_deep_comment = '<div><ul><li><!--comment--><p>paragraph</p></li></ul></div>'
+    checker(done, html_with_deep_comment)(rheo(html_with_deep_comment).render())
+  })
 })
 
 function checker (done, html) {
