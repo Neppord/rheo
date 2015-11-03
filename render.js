@@ -14,6 +14,10 @@ Render.prototype._transform = function (queue, enc, cb) {
   while (obj !== undefined) {
     if (obj.type === 'text') {
       this.push(obj.value)
+    } else if (obj.type === 'open_comment') {
+      this.push('<!--' + obj.value)
+    } else if (obj.type === 'close_comment') {
+      this.push('-->')
     } else if (obj.type === 'open') {
       var attrs = obj.attrs
       var text = '<' + obj.name

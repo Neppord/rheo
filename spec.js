@@ -227,6 +227,10 @@ describe('rheo', function () {
   it('supports first-child that is root', function (done) {
     checker(done, h1)(rheo(h1).find('h1:first-child').render())
   })
+  it('preserves comments', function (done) {
+    var html_with_comment = '<!--comment--><p>paragraph</p>'
+    checker(done, html_with_comment)(rheo(html_with_comment).render())
+  })
 })
 
 function checker (done, html) {
